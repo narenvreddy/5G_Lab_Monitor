@@ -1,0 +1,154 @@
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = record {name: text;};
+type UserData = 
+ record {
+   activeProfileId: opt nat;
+   parentPinHash: opt text;
+   profiles: vec ChildProfile;
+   settings: AppSettings;
+ };
+type UnitProgress = 
+ record {
+   lessons: vec LessonProgress;
+   unitIndex: nat;
+ };
+type Time = int;
+type ServerStatus = record {online: bool;};
+type Result = 
+ variant {
+   err: Error;
+   ok;
+ };
+type PipelineStatus = 
+ record {
+   encoder: PipelineState;
+   nlpParser: PipelineState;
+   scriptGenerator: PipelineState;
+ };
+type PipelineState = 
+ variant {
+   completed;
+   idle;
+   processing;
+ };
+type PipelineStage = 
+ variant {
+   encoder;
+   nlpParser;
+   scriptGenerator;
+ };
+type LessonProgress = 
+ record {
+   attempts: nat;
+   hintsUsed: nat;
+   lessonIndex: nat;
+   stars: nat;
+ };
+type Error = 
+ variant {
+   AmbiguousAttribute: record {
+                         field: text;
+                         sources: vec text;
+                       };
+   FrontendOriginMismatch: record {
+                             expected: vec text;
+                             got: text;
+                           };
+   FrontendOriginsNotConfigured;
+   MalformedCandid;
+   MissingField: text;
+   MixedSsoSources: record {
+                      otherKeys: vec text;
+                      ssoKeys: vec text;
+                    };
+   NoAttributes;
+   Stale: record {ageNs: nat;};
+   UnknownNonce;
+   UntrustedSsoSource: record {domain: text;};
+ };
+type DailyStreak = 
+ record {
+   currentStreak: nat;
+   lastActivity: Time;
+ };
+type ChildProfile = 
+ record {
+   arcadeHighScores: vec record {
+                           text;
+                           nat;
+                         };
+   avatar: text;
+   dailyStreak: DailyStreak;
+   id: nat;
+   name: text;
+   progress: vec UnitProgress;
+ };
+type AppSettings = 
+ record {
+   autoAdvance: bool;
+   colorBlindnessMode: bool;
+   dyslexicFont: bool;
+   highContrastMode: bool;
+   largeTapTargets: bool;
+   reduceMotion: bool;
+   soundEnabled: bool;
+   textToSpeechEnabled: bool;
+   voiceSpeed: nat;
+ };
+service : {
+  __accessControlState: () -> (reserved) query;
+  __onboardingFlags: (ko: opt principal, count: opt nat) ->
+   (vec record {
+          principal;
+          bool;
+        }) query;
+  __pipelineStates: () -> (reserved) query;
+  __userData: (ko: opt principal, count: opt nat) ->
+   (vec record {
+          principal;
+          UserData;
+        }) query;
+  __userProfiles: (ko: opt principal, count: opt nat) ->
+   (vec record {
+          principal;
+          UserProfile;
+        }) query;
+  _initialize_access_control: () -> ();
+  _internet_identity_sign_in_finish: () -> (Result);
+  _internet_identity_sign_in_start: () -> (blob);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  deleteProfile: (profileId: nat) -> ();
+  getActiveProfile: () -> (opt ChildProfile) query;
+  getArcadeHighScore: (profileId: nat, game: text) -> (opt nat) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getHasSeenOnboarding: () -> (bool) query;
+  getPipelineStatus: (testRequestId: text) -> (PipelineStatus) query;
+  getProfiles: () -> (vec ChildProfile) query;
+  getServerStatus: () -> (ServerStatus) query;
+  getSettings: () -> (AppSettings) query;
+  getStreak: (profileId: nat) -> (DailyStreak) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  hasParentPin: () -> (bool);
+  initializeUserData: () -> ();
+  isCallerAdmin: () -> (bool) query;
+  runPipeline: (testRequestId: text) -> (PipelineStatus);
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  saveProfile: (profile: ChildProfile) -> ();
+  sendParentWeeklySummaryEmail: (emailAddress: text, summary: text) -> ();
+  setHasSeenOnboarding: () -> ();
+  setParentPin: (pinHash: text) -> ();
+  switchActiveProfile: (profileId: nat) -> ();
+  updateArcadeHighScore: (profileId: nat, game: text, score: nat) -> ();
+  updatePipelineStatus: (testRequestId: text, stage: PipelineStage, state:
+   PipelineState) -> (PipelineState);
+  updateProfileProgress: (profileId: nat, progress: vec UnitProgress) -> ();
+  updateSettings: (settings: AppSettings) -> ();
+  updateStreak: (profileId: nat, streak: DailyStreak) -> ();
+  verifyParentPin: (pinHash: text) -> (bool);
+}

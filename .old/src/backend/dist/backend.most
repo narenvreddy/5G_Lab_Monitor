@@ -1,0 +1,82 @@
+// Version: 1.0.0
+type AppSettings__813771059 =
+  {
+    autoAdvance : Bool;
+    colorBlindnessMode : Bool;
+    dyslexicFont : Bool;
+    highContrastMode : Bool;
+    largeTapTargets : Bool;
+    reduceMotion : Bool;
+    soundEnabled : Bool;
+    textToSpeechEnabled : Bool;
+    voiceSpeed : Nat
+  };
+type ChildProfile__1066174519 =
+  {
+    arcadeHighScores : [(Text, Nat)];
+    avatar : Text;
+    dailyStreak : DailyStreak__252811677;
+    id : Nat;
+    name : Text;
+    progress : [UnitProgress__41385123]
+  };
+type DailyStreak__252811677 =
+  {currentStreak : Nat; lastActivity : Time__837879871};
+type Data__552063367<K, V> = {var count : Nat__93962160; kvs : [var ?(K, V)]};
+type Int__616954475 = Int;
+type Int__849411254 = Int__616954475;
+type Internal__455405067<K, V> =
+  {children : [var ?Node__279997185<K, V>]; data : Data__552063367<K, V>};
+type Leaf__114713147<K, V> = {data : Data__552063367<K, V>};
+type LessonProgress__1049603143 =
+  {attempts : Nat; hintsUsed : Nat; lessonIndex : Nat; stars : Nat};
+type Map__190625089<K, V> = Map__719753394<K, V>;
+type Map__246123559<K, V> = Map__190625089<K, V>;
+type Map__719753394<K, V> =
+  {var root : Node__279997185<K, V>; var size : Nat__93962160};
+type Nat__920180692 = Nat;
+type Nat__93962160 = Nat__920180692;
+type Node__279997185<K, V> =
+  {#internal : Internal__455405067<K, V>; #leaf : Leaf__114713147<K, V>};
+type PipelineStage__644919044 = {#encoder; #nlpParser; #scriptGenerator};
+type PipelineState__655889845 = {#completed; #idle; #processing};
+type Time__72294698 = Int__849411254;
+type Time__837879871 = Time__72294698;
+type UnitProgress__41385123 =
+  {lessons : [LessonProgress__1049603143]; unitIndex : Nat};
+type UserData__498200022 =
+  {
+    activeProfileId : ?Nat;
+    parentPinHash : ?Text;
+    profiles : [ChildProfile__1066174519];
+    settings : AppSettings__813771059
+  };
+type UserProfile__491224006 = {name : Text};
+type UserRole__686137147 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__246123559<Principal, UserRole__686137147>
+    };
+  stable onboardingFlags :
+    {var root : Node__279997185<Principal, Bool>; var size : Nat__93962160};
+  stable pipelineStates :
+    {
+      var root :
+        Node__279997185<Text,
+                         Map__246123559<PipelineStage__644919044,
+                                         PipelineState__655889845>>;
+      var size : Nat__93962160
+    };
+  stable userData :
+    {
+      var root : Node__279997185<Principal, UserData__498200022>;
+      var size : Nat__93962160
+    };
+  stable userProfiles :
+    {
+      var root : Node__279997185<Principal, UserProfile__491224006>;
+      var size : Nat__93962160
+    }
+};

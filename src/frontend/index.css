@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 1rem;
+    --background: 0.96 0.015 280;
+    --foreground: 0.1 0.02 280;
+    --card: 1 0 0;
+    --card-foreground: 0.1 0.02 280;
+    --popover: 1 0 0;
+    --popover-foreground: 0.1 0.02 280;
+    --primary: 0.42 0.18 280;
+    --primary-foreground: 0.98 0 0;
+    --secondary: 0.94 0.02 280;
+    --secondary-foreground: 0.42 0.18 280;
+    --muted: 0.94 0.02 280;
+    --muted-foreground: 0.5 0.05 280;
+    --accent: 0.94 0.02 280;
+    --accent-foreground: 0.42 0.18 280;
+    --destructive: 0.65 0.22 15;
+    --destructive-foreground: 0.98 0 0;
+    --border: 0.88 0.03 280;
+    --input: 0.88 0.03 280;
+    --ring: 0.42 0.18 280;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-[#F4F2FF] text-[#1A1A2E] font-nunito;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .font-dyslexic * {
+    font-family: 'OpenDyslexic', 'Arial', sans-serif !important;
+  }
+
+  .high-contrast {
+    filter: contrast(1.4);
+  }
+
+  .reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .large-targets button,
+  .large-targets [role="button"],
+  .large-targets a,
+  .large-targets input,
+  .large-targets select {
+    min-height: 64px !important;
+    min-width: 64px !important;
+  }
+}
+
+@layer utilities {
+  .font-nunito {
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-bounce-in { animation: bounce-in 0.5s ease-out; }
+.animate-wiggle { animation: wiggle 0.5s ease-in-out; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pop { animation: pop 0.3s ease-out; }
