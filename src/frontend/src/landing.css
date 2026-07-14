@@ -153,26 +153,27 @@
 
 .float-chip {
   position: absolute;
+  /* top/left mark the chip's CENTER (computed via trig), so translate
+     back by -50%/-50% to center the chip on that point. */
+  transform: translate(-50%, -50%) translateZ(0);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-weight: 900;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   user-select: none;
   will-change: transform;
-  transform: translateZ(0);
   backface-visibility: hidden;
   z-index: 2;
 }
 
 .hero-mascot-wrap {
   position: absolute;
-  top: 0;
-  right: 0;
-  transform: scale(0.5);
-  transform-origin: top right;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  transform-origin: center center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -299,10 +300,11 @@
 }
 
 .workspace-row {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding: 0.85rem;
+  padding: 0.85rem 2.25rem 0.85rem 0.85rem;
   background: #fffdf5;
   border: 1px solid rgba(91, 79, 207, 0.14);
   border-radius: 0.75rem;
@@ -311,6 +313,56 @@
 .workspace-row:hover {
   border-color: rgba(91, 79, 207, 0.3);
   box-shadow: 0 2px 10px rgba(91, 79, 207, 0.08);
+}
+
+/* ── Row close (×) button — absolute top-right corner ──────────── */
+/* Hidden by default; revealed on row hover AND on keyboard focus
+   so mouse users see a clean row while keyboard users can still
+   reach the control via Tab + :focus-visible. */
+.workspace-row-close {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(91, 79, 207, 0.08);
+  color: #5b4fcf;
+  border: 1px solid rgba(91, 79, 207, 0.22);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    background 0.18s ease, color 0.18s ease,
+    border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease,
+    opacity 0.18s ease, visibility 0.18s ease;
+}
+.workspace-row:hover .workspace-row-close,
+.workspace-row-close:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.workspace-row-close:hover {
+  background: rgba(239, 68, 68, 0.14);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.22);
+}
+.workspace-row-close:active {
+  transform: scale(1);
+}
+.workspace-row-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(91, 79, 207, 0.28);
 }
 
 .workspace-row-top {
@@ -336,8 +388,8 @@
 }
 
 .workspace-test-id-input {
-  flex: 1 1 1rem;
-  min-width: 1rem;
+  flex: 1 1 0.5rem;
+  min-width: 0.5rem;
   padding: 0.45rem 0.65rem;
   font-family: "Nunito", sans-serif;
   font-size: 0.85rem;
@@ -378,6 +430,8 @@
   box-shadow: 0 0 0 3px rgba(91, 79, 207, 0.18);
 }
 .workspace-field-type-input {
+  flex: 1 1 0.5rem;
+  min-width: 0.5rem;
   color: #5b4fcf;
   border-color: rgba(91, 79, 207, 0.28);
 }
@@ -388,8 +442,8 @@
   border-color: #5b4fcf;
 }
 .workspace-field-details-input {
-  flex: 1 1 15.625rem;
-  min-width: 15.625rem;
+  flex: 1 1 19.53125rem;
+  min-width: 19.53125rem;
   color: #008574;
   border-color: rgba(0, 201, 167, 0.28);
 }
@@ -614,17 +668,17 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0) translateZ(0);
+    transform: translate(-50%, -50%) translateY(0) translateZ(0);
   }
   50% {
-    transform: translateY(-12px) translateZ(0);
+    transform: translate(-50%, -50%) translateY(-12px) translateZ(0);
   }
 }
 
 .animate-float {
   animation: float 3.2s ease-in-out infinite;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate(-50%, -50%) translateZ(0);
   backface-visibility: hidden;
 }
 
@@ -681,7 +735,7 @@
     right: 0.75rem;
   }
   .hero-mascot-wrap {
-    transform: scale(0.3);
+    transform: translate(-50%, -50%) scale(0.3);
   }
   .float-chip {
     display: none;
@@ -692,6 +746,11 @@
   }
   .workspace-section {
     padding: 1rem 1.25rem;
+  }
+  .workspace-row {
+    /* Leave room at top-right so the absolute close button never overlaps
+       the serial badge or full-width inputs on mobile. */
+    padding-right: 2.25rem;
   }
   .workspace-row-top {
     gap: 0.45rem;

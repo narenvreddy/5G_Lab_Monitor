@@ -4684,14 +4684,14 @@ function ct(t) {
 function T(t, e) {
   E(t, e.length), r > a.length - e.length && k(r + e.length), a.set(e, r), r += e.length;
 }
-function X(t, e) {
+function X$1(t, e) {
   E(t, e);
 }
 function it(t) {
-  X(c.UnsignedInteger, t);
+  X$1(c.UnsignedInteger, t);
 }
 function st(t) {
-  X(
+  X$1(
     c.NegativeInteger,
     typeof t == "bigint" ? -1n - t : -1 - t
   );
@@ -33149,16 +33149,28 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$6 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$6);
+const __iconNode$7 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$7);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$5 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$5);
+const __iconNode$6 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$6);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33166,11 +33178,10 @@ const ChevronRight = createLucideIcon("chevron-right", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$4);
+const Copy = createLucideIcon("copy", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33178,10 +33189,11 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$4);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$3 = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$3);
+const ExternalLink = createLucideIcon("external-link", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33189,11 +33201,10 @@ const Copy = createLucideIcon("copy", __iconNode$3);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
+  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
 ];
-const ExternalLink = createLucideIcon("external-link", __iconNode$2);
+const Link = createLucideIcon("link", __iconNode$2);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33201,10 +33212,10 @@ const ExternalLink = createLucideIcon("external-link", __iconNode$2);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1 = [
-  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
-  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
 ];
-const Link = createLucideIcon("link", __iconNode$1);
+const Plus = createLucideIcon("plus", __iconNode$1);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33212,10 +33223,10 @@ const Link = createLucideIcon("link", __iconNode$1);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
-const Plus = createLucideIcon("plus", __iconNode);
+const X = createLucideIcon("x", __iconNode);
 const Error$1 = Variant({
   "FrontendOriginsNotConfigured": Null,
   "MixedSsoSources": Record({
@@ -33751,53 +33762,161 @@ function createActor(canisterId, _uploadFile, _downloadFile, options = {}) {
 function useActor() {
   return useActor$1(createActor);
 }
-const FLOAT_CHIPS = [
+const CHIP_CENTER = 50;
+const CHIP_RADIUS = 42;
+function chipPosition(i) {
+  const angleDeg = -90 + i * 72;
+  const angleRad = angleDeg * Math.PI / 180;
+  const top = CHIP_CENTER + CHIP_RADIUS * Math.sin(angleRad);
+  const left = CHIP_CENTER + CHIP_RADIUS * Math.cos(angleRad);
+  return { top: `${top}%`, left: `${left}%` };
+}
+const CHIP_DEFS = [
+  // All five chips render at the same size so the set looks uniform.
+  { icon: "call", color: "#5B4FCF", delay: "0s", dur: "3.4s", size: 52 },
   {
-    symbol: "+",
-    color: "#5B4FCF",
-    top: "12%",
-    left: "10%",
-    delay: "0s",
-    dur: "3.4s",
-    size: 56
-  },
-  {
-    symbol: "×",
+    icon: "mobileData",
     color: "#FF6B35",
-    top: "22%",
-    right: "8%",
     delay: "0.6s",
     dur: "2.9s",
     size: 52
   },
-  {
-    symbol: "÷",
-    color: "#00C9A7",
-    top: "60%",
-    right: "12%",
-    delay: "1.1s",
-    dur: "3.7s",
-    size: 50
-  },
-  {
-    symbol: "π",
-    color: "#EF476F",
-    top: "68%",
-    left: "6%",
-    delay: "0.85s",
-    dur: "3.2s",
-    size: 48
-  },
-  {
-    symbol: "∞",
-    color: "#FFD166",
-    top: "40%",
-    right: "4%",
-    delay: "0.35s",
-    dur: "4s",
-    size: 46
-  }
+  { icon: "network", color: "#00C9A7", delay: "1.1s", dur: "3.7s", size: 52 },
+  { icon: "fiveG", color: "#EF476F", delay: "0.85s", dur: "3.2s", size: 52 },
+  { icon: "noService", color: "#FFD166", delay: "0.35s", dur: "4s", size: 52 }
 ];
+const FLOAT_CHIPS = CHIP_DEFS.map((def, i) => ({
+  ...def,
+  ...chipPosition(i)
+}));
+function ChipIconSvg({ icon, size }) {
+  const svgSize = size * 0.6;
+  const common2 = {
+    width: svgSize,
+    height: svgSize,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    role: "presentation",
+    "aria-hidden": true,
+    focusable: false
+  };
+  switch (icon) {
+    case "call":
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { ...common2, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "call icon" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.3 1l-2.1 2.2z",
+            fill: "#fff"
+          }
+        )
+      ] });
+    case "mobileData":
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { ...common2, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "mobile data icon" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M12 3v7",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M8.5 6.5 12 3l3.5 3.5",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            fill: "none"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M12 21v-7",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M8.5 17.5 12 21l3.5-3.5",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            fill: "none"
+          }
+        )
+      ] });
+    case "network":
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { ...common2, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "4G icon" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "text",
+          {
+            x: "12",
+            y: "17",
+            textAnchor: "middle",
+            fontFamily: "Nunito, sans-serif",
+            fontSize: "9.5",
+            fontWeight: "900",
+            fill: "#fff",
+            children: "4G"
+          }
+        )
+      ] });
+    case "fiveG":
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { ...common2, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "5G icon" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "text",
+          {
+            x: "12",
+            y: "17",
+            textAnchor: "middle",
+            fontFamily: "Nunito, sans-serif",
+            fontSize: "9.5",
+            fontWeight: "900",
+            fill: "#fff",
+            children: "5G"
+          }
+        )
+      ] });
+    case "noService":
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { ...common2, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("title", { children: "no service icon" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M4 14v4M9 11v7M14 8v10",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M3 3 21 21",
+            stroke: "#fff",
+            strokeWidth: "2.2",
+            strokeLinecap: "round"
+          }
+        )
+      ] });
+    default:
+      return null;
+  }
+}
 const SPARK_GRAD_ID = "lp-spark-bolt-grad";
 const SPARK_FILTER_ID = "lp-spark-bolt-glow";
 function SparkLogo({ size = 32 }) {
@@ -33976,7 +34095,10 @@ function LandingPage() {
     setRows((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        // Use max(existing ids) + 1 so a new row never collides with an
+        // existing id. (After removeRow renumbers to 1..n, prev.length + 1
+        // would also work, but the max approach is robust to any state.)
+        id: prev.length === 0 ? 1 : Math.max(...prev.map((r2) => r2.id)) + 1,
         testId: "",
         requestType: "",
         requestDetails: "",
@@ -33987,6 +34109,11 @@ function LandingPage() {
         pipelineError: false
       }
     ]);
+  }, []);
+  const removeRow = reactExports.useCallback((rowId) => {
+    setRows(
+      (prev) => prev.filter((r2) => r2.id !== rowId).map((r2, i) => ({ ...r2, id: i + 1 }))
+    );
   }, []);
   const updateTestId = reactExports.useCallback((rowId, value) => {
     setRows(
@@ -34120,16 +34247,14 @@ function LandingPage() {
             background: chip.color,
             top: chip.top,
             left: chip.left,
-            right: chip.right,
             width: chip.size,
             height: chip.size,
-            fontSize: chip.size * 0.38,
             animationDelay: chip.delay,
             animationDuration: chip.dur
           },
-          children: chip.symbol
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChipIconSvg, { icon: chip.icon, size: chip.size })
         },
-        chip.symbol
+        chip.icon
       )),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hero-mascot-wrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RobotMascot, { size: 180, mood: "happy" }) })
     ] }),
@@ -34209,6 +34334,18 @@ function LandingPage() {
                         className: "workspace-row",
                         "data-ocid": `landing.workspace.item.${idx + 1}`,
                         children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            "button",
+                            {
+                              type: "button",
+                              className: "workspace-row-close",
+                              onClick: () => removeRow(row.id),
+                              "data-ocid": `landing.workspace.delete_button.${idx + 1}`,
+                              "aria-label": `Remove test request row ${row.id}`,
+                              title: `Remove row ${row.id}`,
+                              children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 12, strokeWidth: 3, "aria-hidden": "true" })
+                            }
+                          ),
                           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-row-top", children: [
                             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-serial", children: row.id }),
                             /* @__PURE__ */ jsxRuntimeExports.jsx(

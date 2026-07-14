@@ -1,5 +1,5 @@
 import "../landing.css";
-import { AlertCircle, ChevronRight, ExternalLink, Plus } from "lucide-react";
+import { AlertCircle, ChevronRight, ExternalLink, Plus, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   PipelineState,
@@ -9,53 +9,176 @@ import {
 import { useActor } from "../hooks/useActor";
 import { RobotMascot } from "./RobotMascot";
 
-const FLOAT_CHIPS = [
+// ── Floating chip icons (inline SVG) ──────────────────────────────
+// Each chip keeps its color + size; the SVG scales to 60% of chip size
+// and is centered inside the circular chip span.
+
+type ChipIcon = "call" | "mobileData" | "network" | "fiveG" | "noService";
+
+interface FloatChip {
+  icon: ChipIcon;
+  color: string;
+  delay: string;
+  dur: string;
+  size: number;
+  top: string;
+  left: string;
+}
+
+// Radially symmetric placement around the centered mascot wrap.
+// angle = -90deg + i*72deg  →  top, upper-right, lower-right, lower-left, upper-left
+// top  = centerY + radius * sin(angle)
+// left = centerX + radius * cos(angle)
+// centerX = centerY = 50%, radius = 42% (tuned to stay inside 360x380 area).
+const CHIP_CENTER = 50;
+const CHIP_RADIUS = 42;
+
+function chipPosition(i: number): { top: string; left: string } {
+  const angleDeg = -90 + i * 72;
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const top = CHIP_CENTER + CHIP_RADIUS * Math.sin(angleRad);
+  const left = CHIP_CENTER + CHIP_RADIUS * Math.cos(angleRad);
+  return { top: `${top}%`, left: `${left}%` };
+}
+
+const CHIP_DEFS: Omit<FloatChip, "top" | "left">[] = [
+  // All five chips render at the same size so the set looks uniform.
+  { icon: "call", color: "#5B4FCF", delay: "0s", dur: "3.4s", size: 52 },
   {
-    symbol: "+",
-    color: "#5B4FCF",
-    top: "12%",
-    left: "10%",
-    delay: "0s",
-    dur: "3.4s",
-    size: 56,
-  },
-  {
-    symbol: "×",
+    icon: "mobileData",
     color: "#FF6B35",
-    top: "22%",
-    right: "8%",
     delay: "0.6s",
     dur: "2.9s",
     size: 52,
   },
-  {
-    symbol: "÷",
-    color: "#00C9A7",
-    top: "60%",
-    right: "12%",
-    delay: "1.1s",
-    dur: "3.7s",
-    size: 50,
-  },
-  {
-    symbol: "π",
-    color: "#EF476F",
-    top: "68%",
-    left: "6%",
-    delay: "0.85s",
-    dur: "3.2s",
-    size: 48,
-  },
-  {
-    symbol: "∞",
-    color: "#FFD166",
-    top: "40%",
-    right: "4%",
-    delay: "0.35s",
-    dur: "4s",
-    size: 46,
-  },
+  { icon: "network", color: "#00C9A7", delay: "1.1s", dur: "3.7s", size: 52 },
+  { icon: "fiveG", color: "#EF476F", delay: "0.85s", dur: "3.2s", size: 52 },
+  { icon: "noService", color: "#FFD166", delay: "0.35s", dur: "4s", size: 52 },
 ];
+
+const FLOAT_CHIPS: FloatChip[] = CHIP_DEFS.map((def, i) => ({
+  ...def,
+  ...chipPosition(i),
+}));
+
+function ChipIconSvg({ icon, size }: { icon: ChipIcon; size: number }) {
+  const svgSize = size * 0.6;
+  const common = {
+    width: svgSize,
+    height: svgSize,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    role: "presentation",
+    "aria-hidden": true,
+    focusable: false as const,
+  };
+  switch (icon) {
+    case "call":
+      // Phone handset
+      return (
+        <svg {...common}>
+          <title>call icon</title>
+          <path
+            d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.3 1l-2.1 2.2z"
+            fill="#fff"
+          />
+        </svg>
+      );
+    case "mobileData":
+      // Signal arrows up/down
+      return (
+        <svg {...common}>
+          <title>mobile data icon</title>
+          <path
+            d="M12 3v7"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M8.5 6.5 12 3l3.5 3.5"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <path
+            d="M12 21v-7"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M8.5 17.5 12 21l3.5-3.5"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </svg>
+      );
+    case "network":
+      // "4G" text styled identically to the existing "5G" icon
+      return (
+        <svg {...common}>
+          <title>4G icon</title>
+          <text
+            x="12"
+            y="17"
+            textAnchor="middle"
+            fontFamily="Nunito, sans-serif"
+            fontSize="9.5"
+            fontWeight="900"
+            fill="#fff"
+          >
+            4G
+          </text>
+        </svg>
+      );
+    case "fiveG":
+      // "5G" text styled
+      return (
+        <svg {...common}>
+          <title>5G icon</title>
+          <text
+            x="12"
+            y="17"
+            textAnchor="middle"
+            fontFamily="Nunito, sans-serif"
+            fontSize="9.5"
+            fontWeight="900"
+            fill="#fff"
+          >
+            5G
+          </text>
+        </svg>
+      );
+    case "noService":
+      // Signal bars with slash
+      return (
+        <svg {...common}>
+          <title>no service icon</title>
+          <path
+            d="M4 14v4M9 11v7M14 8v10"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M3 3 21 21"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 
 const SPARK_GRAD_ID = "lp-spark-bolt-grad";
 const SPARK_FILTER_ID = "lp-spark-bolt-glow";
@@ -259,7 +382,10 @@ export function LandingPage() {
     setRows((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        // Use max(existing ids) + 1 so a new row never collides with an
+        // existing id. (After removeRow renumbers to 1..n, prev.length + 1
+        // would also work, but the max approach is robust to any state.)
+        id: prev.length === 0 ? 1 : Math.max(...prev.map((r) => r.id)) + 1,
         testId: "",
         requestType: "",
         requestDetails: "",
@@ -270,6 +396,15 @@ export function LandingPage() {
         pipelineError: false,
       },
     ]);
+  }, []);
+
+  const removeRow = useCallback((rowId: number) => {
+    // Filter out the deleted row, then renumber the remaining rows to a
+    // contiguous 1..n sequence so serial badges stay sequential after any
+    // deletion.
+    setRows((prev) =>
+      prev.filter((r) => r.id !== rowId).map((r, i) => ({ ...r, id: i + 1 })),
+    );
   }, []);
 
   const updateTestId = useCallback((rowId: number, value: string) => {
@@ -441,23 +576,21 @@ export function LandingPage() {
       <div className="hero-mascot-area" aria-hidden="true">
         {FLOAT_CHIPS.map((chip) => (
           <span
-            key={chip.symbol}
+            key={chip.icon}
             className="float-chip animate-float"
             style={
               {
                 background: chip.color,
                 top: chip.top,
-                left: (chip as { left?: string }).left,
-                right: (chip as { right?: string }).right,
+                left: chip.left,
                 width: chip.size,
                 height: chip.size,
-                fontSize: chip.size * 0.38,
                 animationDelay: chip.delay,
                 animationDuration: chip.dur,
               } as React.CSSProperties
             }
           >
-            {chip.symbol}
+            <ChipIconSvg icon={chip.icon} size={chip.size} />
           </span>
         ))}
         <div className="hero-mascot-wrap">
@@ -544,6 +677,16 @@ export function LandingPage() {
                   className="workspace-row"
                   data-ocid={`landing.workspace.item.${idx + 1}`}
                 >
+                  <button
+                    type="button"
+                    className="workspace-row-close"
+                    onClick={() => removeRow(row.id)}
+                    data-ocid={`landing.workspace.delete_button.${idx + 1}`}
+                    aria-label={`Remove test request row ${row.id}`}
+                    title={`Remove row ${row.id}`}
+                  >
+                    <X size={12} strokeWidth={3} aria-hidden="true" />
+                  </button>
                   <div className="workspace-row-top">
                     <span className="workspace-serial">{row.id}</span>
                     <input
