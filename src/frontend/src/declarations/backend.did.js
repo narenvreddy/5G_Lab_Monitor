@@ -8,47 +8,6 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const AppSettings = IDL.Record({
-  'voiceSpeed' : IDL.Nat,
-  'reduceMotion' : IDL.Bool,
-  'highContrastMode' : IDL.Bool,
-  'dyslexicFont' : IDL.Bool,
-  'colorBlindnessMode' : IDL.Bool,
-  'largeTapTargets' : IDL.Bool,
-  'soundEnabled' : IDL.Bool,
-  'textToSpeechEnabled' : IDL.Bool,
-  'autoAdvance' : IDL.Bool,
-});
-export const LessonProgress = IDL.Record({
-  'lessonIndex' : IDL.Nat,
-  'attempts' : IDL.Nat,
-  'stars' : IDL.Nat,
-  'hintsUsed' : IDL.Nat,
-});
-export const UnitProgress = IDL.Record({
-  'lessons' : IDL.Vec(LessonProgress),
-  'unitIndex' : IDL.Nat,
-});
-export const Time = IDL.Int;
-export const DailyStreak = IDL.Record({
-  'lastActivity' : Time,
-  'currentStreak' : IDL.Nat,
-});
-export const ChildProfile = IDL.Record({
-  'id' : IDL.Nat,
-  'arcadeHighScores' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)),
-  'name' : IDL.Text,
-  'progress' : IDL.Vec(UnitProgress),
-  'dailyStreak' : DailyStreak,
-  'avatar' : IDL.Text,
-});
-export const UserData = IDL.Record({
-  'activeProfileId' : IDL.Opt(IDL.Nat),
-  'settings' : AppSettings,
-  'parentPinHash' : IDL.Opt(IDL.Text),
-  'profiles' : IDL.Vec(ChildProfile),
-});
-export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const Error = IDL.Variant({
   'FrontendOriginsNotConfigured' : IDL.Null,
   'MixedSsoSources' : IDL.Record({
@@ -70,11 +29,24 @@ export const Error = IDL.Variant({
     'expected' : IDL.Vec(IDL.Text),
   }),
 });
-export const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+export const Result__1 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
   'guest' : IDL.Null,
+});
+export const Value = IDL.Variant({
+  'int' : IDL.Int,
+  'nat' : IDL.Nat,
+  'float' : IDL.Float64,
+  'bool' : IDL.Bool,
+  'null' : IDL.Null,
+  'text' : IDL.Text,
+});
+export const Cell = IDL.Record({ 'value' : Value, 'name' : IDL.Text });
+export const Result = IDL.Record({
+  'hasMore' : IDL.Bool,
+  'rows' : IDL.Vec(IDL.Vec(Cell)),
 });
 export const PipelineState = IDL.Variant({
   'idle' : IDL.Null,
@@ -95,112 +67,28 @@ export const PipelineStage = IDL.Variant({
 
 export const idlService = IDL.Service({
   '__accessControlState' : IDL.Func([], [IDL.Reserved], ['query']),
-  '__onboardingFlags' : IDL.Func(
-      [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-      [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Bool))],
-      ['query'],
-    ),
   '__pipelineStates' : IDL.Func([], [IDL.Reserved], ['query']),
-  '__userData' : IDL.Func(
-      [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-      [IDL.Vec(IDL.Tuple(IDL.Principal, UserData))],
-      ['query'],
-    ),
-  '__userProfiles' : IDL.Func(
-      [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-      [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
-      ['query'],
-    ),
   '_initialize_access_control' : IDL.Func([], [], []),
-  '_internet_identity_sign_in_finish' : IDL.Func([], [Result], []),
+  '_internet_identity_sign_in_finish' : IDL.Func([], [Result__1], []),
   '_internet_identity_sign_in_start' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'deleteProfile' : IDL.Func([IDL.Nat], [], []),
-  'getActiveProfile' : IDL.Func([], [IDL.Opt(ChildProfile)], ['query']),
-  'getArcadeHighScore' : IDL.Func(
-      [IDL.Nat, IDL.Text],
-      [IDL.Opt(IDL.Nat)],
-      ['query'],
-    ),
-  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'execute' : IDL.Func([IDL.Text], [Result], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getHasSeenOnboarding' : IDL.Func([], [IDL.Bool], ['query']),
   'getPipelineStatus' : IDL.Func([IDL.Text], [PipelineStatus], ['query']),
-  'getProfiles' : IDL.Func([], [IDL.Vec(ChildProfile)], ['query']),
   'getServerStatus' : IDL.Func([], [ServerStatus], ['query']),
-  'getSettings' : IDL.Func([], [AppSettings], ['query']),
-  'getStreak' : IDL.Func([IDL.Nat], [DailyStreak], ['query']),
-  'getUserProfile' : IDL.Func(
-      [IDL.Principal],
-      [IDL.Opt(UserProfile)],
-      ['query'],
-    ),
-  'hasParentPin' : IDL.Func([], [IDL.Bool], []),
-  'initializeUserData' : IDL.Func([], [], []),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'runPipeline' : IDL.Func([IDL.Text], [PipelineStatus], []),
-  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'saveProfile' : IDL.Func([ChildProfile], [], []),
-  'sendParentWeeklySummaryEmail' : IDL.Func([IDL.Text, IDL.Text], [], []),
-  'setHasSeenOnboarding' : IDL.Func([], [], []),
-  'setParentPin' : IDL.Func([IDL.Text], [], []),
-  'switchActiveProfile' : IDL.Func([IDL.Nat], [], []),
-  'updateArcadeHighScore' : IDL.Func([IDL.Nat, IDL.Text, IDL.Nat], [], []),
+  'schema' : IDL.Func([], [IDL.Text], ['query']),
   'updatePipelineStatus' : IDL.Func(
       [IDL.Text, PipelineStage, PipelineState],
       [PipelineState],
       [],
     ),
-  'updateProfileProgress' : IDL.Func([IDL.Nat, IDL.Vec(UnitProgress)], [], []),
-  'updateSettings' : IDL.Func([AppSettings], [], []),
-  'updateStreak' : IDL.Func([IDL.Nat, DailyStreak], [], []),
-  'verifyParentPin' : IDL.Func([IDL.Text], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const AppSettings = IDL.Record({
-    'voiceSpeed' : IDL.Nat,
-    'reduceMotion' : IDL.Bool,
-    'highContrastMode' : IDL.Bool,
-    'dyslexicFont' : IDL.Bool,
-    'colorBlindnessMode' : IDL.Bool,
-    'largeTapTargets' : IDL.Bool,
-    'soundEnabled' : IDL.Bool,
-    'textToSpeechEnabled' : IDL.Bool,
-    'autoAdvance' : IDL.Bool,
-  });
-  const LessonProgress = IDL.Record({
-    'lessonIndex' : IDL.Nat,
-    'attempts' : IDL.Nat,
-    'stars' : IDL.Nat,
-    'hintsUsed' : IDL.Nat,
-  });
-  const UnitProgress = IDL.Record({
-    'lessons' : IDL.Vec(LessonProgress),
-    'unitIndex' : IDL.Nat,
-  });
-  const Time = IDL.Int;
-  const DailyStreak = IDL.Record({
-    'lastActivity' : Time,
-    'currentStreak' : IDL.Nat,
-  });
-  const ChildProfile = IDL.Record({
-    'id' : IDL.Nat,
-    'arcadeHighScores' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)),
-    'name' : IDL.Text,
-    'progress' : IDL.Vec(UnitProgress),
-    'dailyStreak' : DailyStreak,
-    'avatar' : IDL.Text,
-  });
-  const UserData = IDL.Record({
-    'activeProfileId' : IDL.Opt(IDL.Nat),
-    'settings' : AppSettings,
-    'parentPinHash' : IDL.Opt(IDL.Text),
-    'profiles' : IDL.Vec(ChildProfile),
-  });
-  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const Error = IDL.Variant({
     'FrontendOriginsNotConfigured' : IDL.Null,
     'MixedSsoSources' : IDL.Record({
@@ -222,11 +110,24 @@ export const idlFactory = ({ IDL }) => {
       'expected' : IDL.Vec(IDL.Text),
     }),
   });
-  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
+  const Result__1 = IDL.Variant({ 'ok' : IDL.Null, 'err' : Error });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
+  });
+  const Value = IDL.Variant({
+    'int' : IDL.Int,
+    'nat' : IDL.Nat,
+    'float' : IDL.Float64,
+    'bool' : IDL.Bool,
+    'null' : IDL.Null,
+    'text' : IDL.Text,
+  });
+  const Cell = IDL.Record({ 'value' : Value, 'name' : IDL.Text });
+  const Result = IDL.Record({
+    'hasMore' : IDL.Bool,
+    'rows' : IDL.Vec(IDL.Vec(Cell)),
   });
   const PipelineState = IDL.Variant({
     'idle' : IDL.Null,
@@ -247,70 +148,23 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     '__accessControlState' : IDL.Func([], [IDL.Reserved], ['query']),
-    '__onboardingFlags' : IDL.Func(
-        [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Bool))],
-        ['query'],
-      ),
     '__pipelineStates' : IDL.Func([], [IDL.Reserved], ['query']),
-    '__userData' : IDL.Func(
-        [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-        [IDL.Vec(IDL.Tuple(IDL.Principal, UserData))],
-        ['query'],
-      ),
-    '__userProfiles' : IDL.Func(
-        [IDL.Opt(IDL.Principal), IDL.Opt(IDL.Nat)],
-        [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
-        ['query'],
-      ),
     '_initialize_access_control' : IDL.Func([], [], []),
-    '_internet_identity_sign_in_finish' : IDL.Func([], [Result], []),
+    '_internet_identity_sign_in_finish' : IDL.Func([], [Result__1], []),
     '_internet_identity_sign_in_start' : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'deleteProfile' : IDL.Func([IDL.Nat], [], []),
-    'getActiveProfile' : IDL.Func([], [IDL.Opt(ChildProfile)], ['query']),
-    'getArcadeHighScore' : IDL.Func(
-        [IDL.Nat, IDL.Text],
-        [IDL.Opt(IDL.Nat)],
-        ['query'],
-      ),
-    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'execute' : IDL.Func([IDL.Text], [Result], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getHasSeenOnboarding' : IDL.Func([], [IDL.Bool], ['query']),
     'getPipelineStatus' : IDL.Func([IDL.Text], [PipelineStatus], ['query']),
-    'getProfiles' : IDL.Func([], [IDL.Vec(ChildProfile)], ['query']),
     'getServerStatus' : IDL.Func([], [ServerStatus], ['query']),
-    'getSettings' : IDL.Func([], [AppSettings], ['query']),
-    'getStreak' : IDL.Func([IDL.Nat], [DailyStreak], ['query']),
-    'getUserProfile' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Opt(UserProfile)],
-        ['query'],
-      ),
-    'hasParentPin' : IDL.Func([], [IDL.Bool], []),
-    'initializeUserData' : IDL.Func([], [], []),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'runPipeline' : IDL.Func([IDL.Text], [PipelineStatus], []),
-    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'saveProfile' : IDL.Func([ChildProfile], [], []),
-    'sendParentWeeklySummaryEmail' : IDL.Func([IDL.Text, IDL.Text], [], []),
-    'setHasSeenOnboarding' : IDL.Func([], [], []),
-    'setParentPin' : IDL.Func([IDL.Text], [], []),
-    'switchActiveProfile' : IDL.Func([IDL.Nat], [], []),
-    'updateArcadeHighScore' : IDL.Func([IDL.Nat, IDL.Text, IDL.Nat], [], []),
+    'schema' : IDL.Func([], [IDL.Text], ['query']),
     'updatePipelineStatus' : IDL.Func(
         [IDL.Text, PipelineStage, PipelineState],
         [PipelineState],
         [],
       ),
-    'updateProfileProgress' : IDL.Func(
-        [IDL.Nat, IDL.Vec(UnitProgress)],
-        [],
-        [],
-      ),
-    'updateSettings' : IDL.Func([AppSettings], [], []),
-    'updateStreak' : IDL.Func([IDL.Nat, DailyStreak], [], []),
-    'verifyParentPin' : IDL.Func([IDL.Text], [IDL.Bool], []),
   });
 };
 

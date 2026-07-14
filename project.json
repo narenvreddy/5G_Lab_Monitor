@@ -1,18 +1,20 @@
 {
-  "overview": "AI Assist Modem Protocol Script Development workspace where users enter TP test IDs, fetch test data, and run a backend-driven pipeline with live status indicators.",
+  "overview": "AI Assist Modem Protocol Script Development workspace with a test request table, pipeline processing indicators, and results page.",
   "features": [
-    "Enter TP test IDs and auto-fetch Request Type and Request Details from the TP API",
-    "Start button triggers backend-driven pipeline orchestration across three stages",
-    "Three pipeline indicators (NLP Parser, Encoder, Script Generator) update live from backend state",
-    "Results button enabled when the Encoder stage completes",
-    "Test rows persist locally across sessions"
+    "Workspace table with Test ID, Request Type, and Request Details",
+    "TP Test ID auto-fetch from external API",
+    "Start button driving NLP Parser, Encoder, and Script Generator indicators",
+    "Results page with copy controls for Request_Id, Request_Details, Output Prediction, Status, and Script_Status",
+    "Local persistence of test row data"
   ],
   "category": "productivity",
   "tags": [
+    "5g",
+    "modem",
+    "protocol",
+    "script",
     "ai-assist",
-    "modem-protocol",
-    "pipeline",
-    "test-automation"
+    "workspace"
   ],
-  "last_updated": "2026-07-13T11:16:53.440Z"
+  "last_updated": "2026-07-14T06:10:42.401Z"
 }

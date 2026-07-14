@@ -1,28 +1,28 @@
+type Value = 
+ variant {
+   "bool": bool;
+   float: float64;
+   "int": int;
+   "nat": nat;
+   "null";
+   "text": text;
+ };
 type UserRole = 
  variant {
    admin;
    guest;
    user;
  };
-type UserProfile = record {name: text;};
-type UserData = 
- record {
-   activeProfileId: opt nat;
-   parentPinHash: opt text;
-   profiles: vec ChildProfile;
-   settings: AppSettings;
- };
-type UnitProgress = 
- record {
-   lessons: vec LessonProgress;
-   unitIndex: nat;
- };
-type Time = int;
 type ServerStatus = record {online: bool;};
-type Result = 
+type Result__1 = 
  variant {
    err: Error;
    ok;
+ };
+type Result = 
+ record {
+   hasMore: bool;
+   rows: vec vec Cell;
  };
 type PipelineStatus = 
  record {
@@ -41,13 +41,6 @@ type PipelineStage =
    encoder;
    nlpParser;
    scriptGenerator;
- };
-type LessonProgress = 
- record {
-   attempts: nat;
-   hintsUsed: nat;
-   lessonIndex: nat;
-   stars: nat;
  };
 type Error = 
  variant {
@@ -71,84 +64,25 @@ type Error =
    UnknownNonce;
    UntrustedSsoSource: record {domain: text;};
  };
-type DailyStreak = 
+type Cell = 
  record {
-   currentStreak: nat;
-   lastActivity: Time;
- };
-type ChildProfile = 
- record {
-   arcadeHighScores: vec record {
-                           text;
-                           nat;
-                         };
-   avatar: text;
-   dailyStreak: DailyStreak;
-   id: nat;
    name: text;
-   progress: vec UnitProgress;
- };
-type AppSettings = 
- record {
-   autoAdvance: bool;
-   colorBlindnessMode: bool;
-   dyslexicFont: bool;
-   highContrastMode: bool;
-   largeTapTargets: bool;
-   reduceMotion: bool;
-   soundEnabled: bool;
-   textToSpeechEnabled: bool;
-   voiceSpeed: nat;
+   value: Value;
  };
 service : {
   __accessControlState: () -> (reserved) query;
-  __onboardingFlags: (ko: opt principal, count: opt nat) ->
-   (vec record {
-          principal;
-          bool;
-        }) query;
   __pipelineStates: () -> (reserved) query;
-  __userData: (ko: opt principal, count: opt nat) ->
-   (vec record {
-          principal;
-          UserData;
-        }) query;
-  __userProfiles: (ko: opt principal, count: opt nat) ->
-   (vec record {
-          principal;
-          UserProfile;
-        }) query;
   _initialize_access_control: () -> ();
-  _internet_identity_sign_in_finish: () -> (Result);
+  _internet_identity_sign_in_finish: () -> (Result__1);
   _internet_identity_sign_in_start: () -> (blob);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
-  deleteProfile: (profileId: nat) -> ();
-  getActiveProfile: () -> (opt ChildProfile) query;
-  getArcadeHighScore: (profileId: nat, game: text) -> (opt nat) query;
-  getCallerUserProfile: () -> (opt UserProfile) query;
+  execute: (qJson: text) -> (Result) query;
   getCallerUserRole: () -> (UserRole) query;
-  getHasSeenOnboarding: () -> (bool) query;
   getPipelineStatus: (testRequestId: text) -> (PipelineStatus) query;
-  getProfiles: () -> (vec ChildProfile) query;
   getServerStatus: () -> (ServerStatus) query;
-  getSettings: () -> (AppSettings) query;
-  getStreak: (profileId: nat) -> (DailyStreak) query;
-  getUserProfile: (user: principal) -> (opt UserProfile) query;
-  hasParentPin: () -> (bool);
-  initializeUserData: () -> ();
   isCallerAdmin: () -> (bool) query;
   runPipeline: (testRequestId: text) -> (PipelineStatus);
-  saveCallerUserProfile: (profile: UserProfile) -> ();
-  saveProfile: (profile: ChildProfile) -> ();
-  sendParentWeeklySummaryEmail: (emailAddress: text, summary: text) -> ();
-  setHasSeenOnboarding: () -> ();
-  setParentPin: (pinHash: text) -> ();
-  switchActiveProfile: (profileId: nat) -> ();
-  updateArcadeHighScore: (profileId: nat, game: text, score: nat) -> ();
+  schema: () -> (text) query;
   updatePipelineStatus: (testRequestId: text, stage: PipelineStage, state:
    PipelineState) -> (PipelineState);
-  updateProfileProgress: (profileId: nat, progress: vec UnitProgress) -> ();
-  updateSettings: (settings: AppSettings) -> ();
-  updateStreak: (profileId: nat, streak: DailyStreak) -> ();
-  verifyParentPin: (pinHash: text) -> (bool);
 }

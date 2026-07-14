@@ -10,26 +10,7 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface AppSettings {
-  'voiceSpeed' : bigint,
-  'reduceMotion' : boolean,
-  'highContrastMode' : boolean,
-  'dyslexicFont' : boolean,
-  'colorBlindnessMode' : boolean,
-  'largeTapTargets' : boolean,
-  'soundEnabled' : boolean,
-  'textToSpeechEnabled' : boolean,
-  'autoAdvance' : boolean,
-}
-export interface ChildProfile {
-  'id' : bigint,
-  'arcadeHighScores' : Array<[string, bigint]>,
-  'name' : string,
-  'progress' : Array<UnitProgress>,
-  'dailyStreak' : DailyStreak,
-  'avatar' : string,
-}
-export interface DailyStreak { 'lastActivity' : Time, 'currentStreak' : bigint }
+export interface Cell { 'value' : Value, 'name' : string }
 export type Error = { 'FrontendOriginsNotConfigured' : null } |
   {
     'MixedSsoSources' : {
@@ -45,12 +26,6 @@ export type Error = { 'FrontendOriginsNotConfigured' : null } |
   { 'UntrustedSsoSource' : { 'domain' : string } } |
   { 'MissingField' : string } |
   { 'FrontendOriginMismatch' : { 'got' : string, 'expected' : Array<string> } };
-export interface LessonProgress {
-  'lessonIndex' : bigint,
-  'attempts' : bigint,
-  'stars' : bigint,
-  'hintsUsed' : bigint,
-}
 export type PipelineStage = { 'nlpParser' : null } |
   { 'encoder' : null } |
   { 'scriptGenerator' : null };
@@ -62,77 +37,37 @@ export interface PipelineStatus {
   'encoder' : PipelineState,
   'scriptGenerator' : PipelineState,
 }
-export type Result = { 'ok' : null } |
+export interface Result { 'hasMore' : boolean, 'rows' : Array<Array<Cell>> }
+export type Result__1 = { 'ok' : null } |
   { 'err' : Error };
 export interface ServerStatus { 'online' : boolean }
-export type Time = bigint;
-export interface UnitProgress {
-  'lessons' : Array<LessonProgress>,
-  'unitIndex' : bigint,
-}
-export interface UserData {
-  'activeProfileId' : [] | [bigint],
-  'settings' : AppSettings,
-  'parentPinHash' : [] | [string],
-  'profiles' : Array<ChildProfile>,
-}
-export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export type Value = { 'int' : bigint } |
+  { 'nat' : bigint } |
+  { 'float' : number } |
+  { 'bool' : boolean } |
+  { 'null' : null } |
+  { 'text' : string };
 export interface _SERVICE {
   '__accessControlState' : ActorMethod<[], any>,
-  '__onboardingFlags' : ActorMethod<
-    [[] | [Principal], [] | [bigint]],
-    Array<[Principal, boolean]>
-  >,
   '__pipelineStates' : ActorMethod<[], any>,
-  '__userData' : ActorMethod<
-    [[] | [Principal], [] | [bigint]],
-    Array<[Principal, UserData]>
-  >,
-  '__userProfiles' : ActorMethod<
-    [[] | [Principal], [] | [bigint]],
-    Array<[Principal, UserProfile]>
-  >,
   '_initialize_access_control' : ActorMethod<[], undefined>,
-  '_internet_identity_sign_in_finish' : ActorMethod<[], Result>,
+  '_internet_identity_sign_in_finish' : ActorMethod<[], Result__1>,
   '_internet_identity_sign_in_start' : ActorMethod<[], Uint8Array>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'deleteProfile' : ActorMethod<[bigint], undefined>,
-  'getActiveProfile' : ActorMethod<[], [] | [ChildProfile]>,
-  'getArcadeHighScore' : ActorMethod<[bigint, string], [] | [bigint]>,
-  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'execute' : ActorMethod<[string], Result>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getHasSeenOnboarding' : ActorMethod<[], boolean>,
   'getPipelineStatus' : ActorMethod<[string], PipelineStatus>,
-  'getProfiles' : ActorMethod<[], Array<ChildProfile>>,
   'getServerStatus' : ActorMethod<[], ServerStatus>,
-  'getSettings' : ActorMethod<[], AppSettings>,
-  'getStreak' : ActorMethod<[bigint], DailyStreak>,
-  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
-  'hasParentPin' : ActorMethod<[], boolean>,
-  'initializeUserData' : ActorMethod<[], undefined>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'runPipeline' : ActorMethod<[string], PipelineStatus>,
-  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'saveProfile' : ActorMethod<[ChildProfile], undefined>,
-  'sendParentWeeklySummaryEmail' : ActorMethod<[string, string], undefined>,
-  'setHasSeenOnboarding' : ActorMethod<[], undefined>,
-  'setParentPin' : ActorMethod<[string], undefined>,
-  'switchActiveProfile' : ActorMethod<[bigint], undefined>,
-  'updateArcadeHighScore' : ActorMethod<[bigint, string, bigint], undefined>,
+  'schema' : ActorMethod<[], string>,
   'updatePipelineStatus' : ActorMethod<
     [string, PipelineStage, PipelineState],
     PipelineState
   >,
-  'updateProfileProgress' : ActorMethod<
-    [bigint, Array<UnitProgress>],
-    undefined
-  >,
-  'updateSettings' : ActorMethod<[AppSettings], undefined>,
-  'updateStreak' : ActorMethod<[bigint, DailyStreak], undefined>,
-  'verifyParentPin' : ActorMethod<[string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

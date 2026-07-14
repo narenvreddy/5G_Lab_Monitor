@@ -9,11 +9,6 @@ import {
 import { useActor } from "../hooks/useActor";
 import { RobotMascot } from "./RobotMascot";
 
-interface LandingPageProps {
-  login: () => void;
-  isLoggingIn: boolean;
-}
-
 const FLOAT_CHIPS = [
   {
     symbol: "+",
@@ -222,10 +217,7 @@ function stateLabel(state: PipelineState): string {
   }
 }
 
-export function LandingPage({
-  login: _login,
-  isLoggingIn: _isLoggingIn,
-}: LandingPageProps) {
+export function LandingPage() {
   const { actor } = useActor();
   const [serverOnline, setServerOnline] = useState<boolean | null>(null);
   const [rows, setRows] = useState<TestRequestRow[]>([]);

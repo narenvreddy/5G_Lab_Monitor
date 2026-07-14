@@ -7,18 +7,24 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface UnitProgress {
-    lessons: Array<LessonProgress>;
-    unitIndex: bigint;
-}
-export type Time = bigint;
 export interface ServerStatus {
     online: boolean;
 }
-export interface DailyStreak {
-    lastActivity: Time;
-    currentStreak: bigint;
+export interface Result {
+    hasMore: boolean;
+    rows: Array<Array<Cell>>;
 }
+export interface Cell {
+    value: Value;
+    name: string;
+}
+export type Result__1 = {
+    __kind__: "ok";
+    ok: null;
+} | {
+    __kind__: "err";
+    err: Error_;
+};
 export type Error_ = {
     __kind__: "FrontendOriginsNotConfigured";
     FrontendOriginsNotConfigured: null;
@@ -63,51 +69,29 @@ export type Error_ = {
         expected: Array<string>;
     };
 };
-export interface UserData {
-    activeProfileId?: bigint;
-    settings: AppSettings;
-    parentPinHash?: string;
-    profiles: Array<ChildProfile>;
-}
+export type Value = {
+    __kind__: "int";
+    int: bigint;
+} | {
+    __kind__: "nat";
+    nat: bigint;
+} | {
+    __kind__: "float";
+    float: number;
+} | {
+    __kind__: "bool";
+    bool: boolean;
+} | {
+    __kind__: "null";
+    null: null;
+} | {
+    __kind__: "text";
+    text: string;
+};
 export interface PipelineStatus {
     nlpParser: PipelineState;
     encoder: PipelineState;
     scriptGenerator: PipelineState;
-}
-export interface ChildProfile {
-    id: bigint;
-    arcadeHighScores: Array<[string, bigint]>;
-    name: string;
-    progress: Array<UnitProgress>;
-    dailyStreak: DailyStreak;
-    avatar: string;
-}
-export interface AppSettings {
-    voiceSpeed: bigint;
-    reduceMotion: boolean;
-    highContrastMode: boolean;
-    dyslexicFont: boolean;
-    colorBlindnessMode: boolean;
-    largeTapTargets: boolean;
-    soundEnabled: boolean;
-    textToSpeechEnabled: boolean;
-    autoAdvance: boolean;
-}
-export type Result = {
-    __kind__: "ok";
-    ok: null;
-} | {
-    __kind__: "err";
-    err: Error_;
-};
-export interface LessonProgress {
-    lessonIndex: bigint;
-    attempts: bigint;
-    stars: bigint;
-    hintsUsed: bigint;
-}
-export interface UserProfile {
-    name: string;
 }
 export enum PipelineStage {
     nlpParser = "nlpParser",
@@ -126,32 +110,12 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    deleteProfile(profileId: bigint): Promise<void>;
-    getActiveProfile(): Promise<ChildProfile | null>;
-    getArcadeHighScore(profileId: bigint, game: string): Promise<bigint | null>;
-    getCallerUserProfile(): Promise<UserProfile | null>;
+    execute(qJson: string): Promise<Result>;
     getCallerUserRole(): Promise<UserRole>;
-    getHasSeenOnboarding(): Promise<boolean>;
     getPipelineStatus(testRequestId: string): Promise<PipelineStatus>;
-    getProfiles(): Promise<Array<ChildProfile>>;
     getServerStatus(): Promise<ServerStatus>;
-    getSettings(): Promise<AppSettings>;
-    getStreak(profileId: bigint): Promise<DailyStreak>;
-    getUserProfile(user: Principal): Promise<UserProfile | null>;
-    hasParentPin(): Promise<boolean>;
-    initializeUserData(): Promise<void>;
     isCallerAdmin(): Promise<boolean>;
     runPipeline(testRequestId: string): Promise<PipelineStatus>;
-    saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    saveProfile(profile: ChildProfile): Promise<void>;
-    sendParentWeeklySummaryEmail(emailAddress: string, summary: string): Promise<void>;
-    setHasSeenOnboarding(): Promise<void>;
-    setParentPin(pinHash: string): Promise<void>;
-    switchActiveProfile(profileId: bigint): Promise<void>;
-    updateArcadeHighScore(profileId: bigint, game: string, score: bigint): Promise<void>;
+    schema(): Promise<string>;
     updatePipelineStatus(testRequestId: string, stage: PipelineStage, state: PipelineState): Promise<PipelineState>;
-    updateProfileProgress(profileId: bigint, progress: Array<UnitProgress>): Promise<void>;
-    updateSettings(settings: AppSettings): Promise<void>;
-    updateStreak(profileId: bigint, streak: DailyStreak): Promise<void>;
-    verifyParentPin(pinHash: string): Promise<boolean>;
 }

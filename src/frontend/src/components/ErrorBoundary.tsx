@@ -21,7 +21,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("MathSpark error:", error, info);
+    console.error("Application error:", error, info);
   }
 
   handleReload = () => {

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "identities": {
+    "default": {
+      "accounts": [
+        {
+          "address": "8c9e0d6e5b3a2f1c4d7e9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+          "derivation_path": [],
+          "principal": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+        }
+      ]
+    }
+  },
+  "canisters": {
+    "backend": {
+      "type": "motoko",
+      "main": "src/backend/main.mo",
+      "build": "mops build",
+      "candid": "src/backend/dist/backend.did",
+      "wasm": "src/backend/dist/backend.wasm"
+    },
+    "frontend": {
+      "type": "assets",
+      "source": ["src/frontend/dist"],
+      "dependencies": ["backend"]
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:4943",
+      "type": "ephemeral"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "mops sources"
+    }
+  }
+}
