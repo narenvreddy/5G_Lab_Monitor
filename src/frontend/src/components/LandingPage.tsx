@@ -1,6 +1,8 @@
 import "../landing.css";
-import { AlertCircle, ChevronRight, ExternalLink, Plus, X } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Plus } from "lucide-react";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   PipelineState,
   type PipelineStatus,
@@ -8,6 +10,17 @@ import {
 } from "../backend";
 import { useActor } from "../hooks/useActor";
 import { RobotMascot } from "./RobotMascot";
+import { WorkspaceRow } from "./WorkspaceRow";
+import {
+  DISPLAY_STAGES,
+  IDLE_STATES,
+  type StageKey,
+  type TestRequestRow,
+  loadPersistedRows,
+  openHistoryInNewTab,
+  openResultsInNewTab,
+  persistRows,
+} from "./workspaceShared";
 
 // ── Floating chip icons (inline SVG) ──────────────────────────────
 // Each chip keeps its color + size; the SVG scales to 60% of chip size
@@ -29,9 +42,10 @@ interface FloatChip {
 // angle = -90deg + i*72deg  →  top, upper-right, lower-right, lower-left, upper-left
 // top  = centerY + radius * sin(angle)
 // left = centerX + radius * cos(angle)
-// centerX = centerY = 50%, radius = 42% (tuned to stay inside 360x380 area).
+// centerX = centerY = 50%, radius = 30% (tuned to keep chips close to the
+// centered mascot wrap while staying inside the 360x380 area).
 const CHIP_CENTER = 50;
-const CHIP_RADIUS = 42;
+const CHIP_RADIUS = 30;
 
 function chipPosition(i: number): { top: string; left: string } {
   const angleDeg = -90 + i * 72;
@@ -239,105 +253,18 @@ function SparkLogo({ size = 32 }: { size?: number }) {
   );
 }
 
-type StageKey = "nlpParser" | "encoder" | "scriptGenerator";
-
-interface TestRequestRow {
-  id: number;
-  testId: string;
-  requestType: string;
-  requestDetails: string;
-  stages: Record<StageKey, PipelineState>;
-  running: boolean;
-  tpLoading: boolean;
-  tpError: boolean;
-  pipelineError: boolean;
-}
-
-interface PersistedRow {
-  id: number;
-  testId: string;
-  requestType: string;
-  requestDetails: string;
-  stages: Record<StageKey, PipelineState>;
-}
-
-const STAGE_LABELS: Record<StageKey, string> = {
-  nlpParser: "NLP Parser",
-  encoder: "Encoder",
-  scriptGenerator: "Script generator",
+// Re-export shared types/constants so existing imports elsewhere still work.
+export {
+  type StageKey,
+  type TestRequestRow,
+  DISPLAY_STAGES,
+  IDLE_STATES,
+  loadPersistedRows,
+  persistRows,
 };
 
-const STAGE_ORDER: StageKey[] = ["nlpParser", "encoder", "scriptGenerator"];
-
-const IDLE_STATES: Record<StageKey, PipelineState> = {
-  nlpParser: PipelineState.idle,
-  encoder: PipelineState.idle,
-  scriptGenerator: PipelineState.idle,
-};
-
-const STORAGE_KEY = "tp_workspace_rows";
-
-function loadPersistedRows(): TestRequestRow[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed: PersistedRow[] = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((r) => ({
-      id: r.id,
-      testId: r.testId ?? "",
-      requestType: r.requestType ?? "",
-      requestDetails: r.requestDetails ?? "",
-      stages: {
-        nlpParser: r.stages?.nlpParser ?? PipelineState.idle,
-        encoder: r.stages?.encoder ?? PipelineState.idle,
-        scriptGenerator: r.stages?.scriptGenerator ?? PipelineState.idle,
-      },
-      running: false,
-      tpLoading: false,
-      tpError: false,
-      pipelineError: false,
-    }));
-  } catch {
-    return [];
-  }
-}
-
-function persistRows(rows: TestRequestRow[]) {
-  try {
-    const serializable: PersistedRow[] = rows.map((r) => ({
-      id: r.id,
-      testId: r.testId,
-      requestType: r.requestType,
-      requestDetails: r.requestDetails,
-      stages: r.stages,
-    }));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
-  } catch {
-    // localStorage may be unavailable; non-fatal
-  }
-}
-
-function stateClass(state: PipelineState): string {
-  switch (state) {
-    case PipelineState.processing:
-      return "ws-stage-state ws-stage-processing";
-    case PipelineState.completed:
-      return "ws-stage-state ws-stage-completed";
-    default:
-      return "ws-stage-state ws-stage-idle";
-  }
-}
-
-function stateLabel(state: PipelineState): string {
-  switch (state) {
-    case PipelineState.processing:
-      return "Processing";
-    case PipelineState.completed:
-      return "completed";
-    default:
-      return "idle";
-  }
+function persistRowsLocal(rows: TestRequestRow[]): void {
+  persistRows(rows);
 }
 
 export function LandingPage() {
@@ -355,7 +282,7 @@ export function LandingPage() {
   // Persist rows to localStorage whenever they change (after hydration)
   useEffect(() => {
     if (!hydratedRef.current) return;
-    persistRows(rows);
+    persistRowsLocal(rows);
   }, [rows]);
 
   // Poll server status every 10s
@@ -394,6 +321,7 @@ export function LandingPage() {
         tpLoading: false,
         tpError: false,
         pipelineError: false,
+        createdAt: new Date().toISOString(),
       },
     ]);
   }, []);
@@ -436,41 +364,41 @@ export function LandingPage() {
         r.id === rowId ? { ...r, tpLoading: true, tpError: false } : r,
       ),
     );
-    try {
-      const res = await fetch(
-        `http://107.111.159.37:8000/api/tp/data/${encodeURIComponent(trimmed)}`,
-      );
-      if (!res.ok) throw new Error(`TP API responded ${res.status}`);
-      const data: unknown = await res.json();
-      const obj = (data ?? {}) as Record<string, unknown>;
-      const testType = typeof obj.testType === "string" ? obj.testType : "";
-      const testDetail =
-        typeof obj.testDetail === "string" ? obj.testDetail : "";
-      setRows((prev) =>
-        prev.map((r) =>
-          r.id === rowId
-            ? {
-                ...r,
-                tpLoading: false,
-                tpError: false,
-                requestType: testType || r.requestType,
-                requestDetails: testDetail || r.requestDetails,
-              }
-            : r,
-        ),
-      );
-    } catch {
-      setRows((prev) =>
-        prev.map((r) =>
-          r.id === rowId ? { ...r, tpLoading: false, tpError: true } : r,
-        ),
-      );
-    }
-  }, []);
-
-  const openResults = useCallback((rowId: number) => {
-    const url = `${window.location.origin}/?result=${rowId}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    const encoded = encodeURIComponent(trimmed);
+    const results = await Promise.allSettled([
+      fetch(`http://107.111.159.37:8000/api/tp/data/${encoded}/testType`),
+      fetch(`http://107.111.159.37:8000/api/tp/data/${encoded}/description`),
+    ]);
+    const [testTypeResult, testDetailResult] = results;
+    const readText = async (
+      result: PromiseSettledResult<Response>,
+    ): Promise<string> => {
+      if (result.status !== "fulfilled") return "";
+      const res = result.value;
+      if (!res.ok) return "";
+      const text = (await res.text()).trim();
+      return text;
+    };
+    const testType = await readText(testTypeResult);
+    const testDetail = await readText(testDetailResult);
+    const bothSucceeded =
+      testTypeResult.status === "fulfilled" &&
+      testTypeResult.value.ok &&
+      testDetailResult.status === "fulfilled" &&
+      testDetailResult.value.ok;
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === rowId
+          ? {
+              ...r,
+              tpLoading: false,
+              tpError: !bothSucceeded,
+              requestType: testType || r.requestType,
+              requestDetails: testDetail || r.requestDetails,
+            }
+          : r,
+      ),
+    );
   }, []);
 
   const runPipeline = useCallback(
@@ -496,18 +424,25 @@ export function LandingPage() {
       // Helper to sync a row's stages from a polled PipelineStatus.
       const applyStatus = (status: PipelineStatus) => {
         setRows((prev) =>
-          prev.map((r) =>
-            r.id === rowId
-              ? {
-                  ...r,
-                  stages: {
-                    nlpParser: status.nlpParser,
-                    encoder: status.encoder,
-                    scriptGenerator: status.scriptGenerator,
-                  },
-                }
-              : r,
-          ),
+          prev.map((r) => {
+            if (r.id !== rowId) return r;
+            const allDone =
+              status.nlpParser === PipelineState.completed &&
+              status.encoder === PipelineState.completed &&
+              status.scriptGenerator === PipelineState.completed;
+            return {
+              ...r,
+              stages: {
+                nlpParser: status.nlpParser,
+                encoder: status.encoder,
+                scriptGenerator: status.scriptGenerator,
+              },
+              completedAt:
+                allDone && !r.completedAt
+                  ? new Date().toISOString()
+                  : r.completedAt,
+            };
+          }),
         );
       };
 
@@ -572,31 +507,39 @@ export function LandingPage() {
 
   return (
     <div className="landing-root" data-ocid="landing.page">
-      {/* Fixed top-right mascot + floating chips */}
-      <div className="hero-mascot-area" aria-hidden="true">
-        {FLOAT_CHIPS.map((chip) => (
-          <span
-            key={chip.icon}
-            className="float-chip animate-float"
-            style={
-              {
-                background: chip.color,
-                top: chip.top,
-                left: chip.left,
-                width: chip.size,
-                height: chip.size,
-                animationDelay: chip.delay,
-                animationDuration: chip.dur,
-              } as React.CSSProperties
-            }
-          >
-            <ChipIconSvg icon={chip.icon} size={chip.size} />
-          </span>
-        ))}
-        <div className="hero-mascot-wrap">
-          <RobotMascot size={180} mood="happy" />
-        </div>
-      </div>
+      {/* Fixed top-right mascot + floating chips
+          Rendered via a portal into document.body so the fixed-positioned
+          .hero-mascot-area is a DIRECT child of <body>. This guarantees its
+          containing block is the viewport (per CSS spec) and it cannot be
+          affected by any ancestor in the LandingPage tree — no matter how
+          tall the page grows, the mascot stays pinned to the top-right. */}
+      {createPortal(
+        <div className="hero-mascot-area" aria-hidden="true">
+          {FLOAT_CHIPS.map((chip) => (
+            <span
+              key={chip.icon}
+              className="float-chip animate-float"
+              style={
+                {
+                  background: chip.color,
+                  top: chip.top,
+                  left: chip.left,
+                  width: chip.size,
+                  height: chip.size,
+                  animationDelay: chip.delay,
+                  animationDuration: chip.dur,
+                } as React.CSSProperties
+              }
+            >
+              <ChipIconSvg icon={chip.icon} size={chip.size} />
+            </span>
+          ))}
+          <div className="hero-mascot-wrap">
+            <RobotMascot size={180} mood="happy" />
+          </div>
+        </div>,
+        document.body,
+      )}
 
       {/* ── HERO ──────────────────────────────────── */}
       <section
@@ -647,16 +590,28 @@ export function LandingPage() {
             </span>
           </div>
 
-          <button
-            type="button"
-            className="add-request-control"
-            onClick={addRow}
-            data-ocid="landing.workspace.add_request_button"
-            aria-label="Add test request"
-          >
-            <Plus size={18} strokeWidth={3} className="add-request-icon" />
-            <span>Add test request</span>
-          </button>
+          <div className="workspace-controls">
+            <button
+              type="button"
+              className="add-request-control"
+              onClick={addRow}
+              data-ocid="landing.workspace.add_request_button"
+              aria-label="Add test request"
+            >
+              <Plus size={18} strokeWidth={3} className="add-request-icon" />
+              <span>Add test request</span>
+            </button>
+            <button
+              type="button"
+              className="history-control"
+              onClick={openHistoryInNewTab}
+              data-ocid="landing.workspace.history_button"
+              aria-label="Open history in a new tab"
+              title="Open history in a new tab"
+            >
+              <span>History</span>
+            </button>
+          </div>
 
           <div className="workspace-rows" data-ocid="landing.workspace.list">
             {rows.length === 0 && (
@@ -667,172 +622,22 @@ export function LandingPage() {
                 No test requests yet. Click the + control above to add one.
               </p>
             )}
-            {rows.map((row, idx) => {
-              const encoderCompleted =
-                row.stages.encoder === PipelineState.completed;
-              const resultsDisabled = !encoderCompleted;
-              return (
-                <div
-                  key={row.id}
-                  className="workspace-row"
-                  data-ocid={`landing.workspace.item.${idx + 1}`}
-                >
-                  <button
-                    type="button"
-                    className="workspace-row-close"
-                    onClick={() => removeRow(row.id)}
-                    data-ocid={`landing.workspace.delete_button.${idx + 1}`}
-                    aria-label={`Remove test request row ${row.id}`}
-                    title={`Remove row ${row.id}`}
-                  >
-                    <X size={12} strokeWidth={3} aria-hidden="true" />
-                  </button>
-                  <div className="workspace-row-top">
-                    <span className="workspace-serial">{row.id}</span>
-                    <input
-                      type="text"
-                      className="workspace-test-id-input"
-                      placeholder="Test ID"
-                      value={row.testId}
-                      onChange={(e) => updateTestId(row.id, e.target.value)}
-                      onBlur={(e) => handleTestIdBlur(row.id, e.target.value)}
-                      data-ocid={`landing.workspace.input.${idx + 1}`}
-                      aria-label={`Test ID for row ${row.id}`}
-                    />
-                    <input
-                      type="text"
-                      className="workspace-field-input workspace-field-type-input"
-                      placeholder="Request Type"
-                      value={row.requestType}
-                      onChange={(e) =>
-                        updateRequestType(row.id, e.target.value)
-                      }
-                      data-ocid={`landing.workspace.request_type_input.${idx + 1}`}
-                      aria-label={`Request Type for row ${row.id}`}
-                    />
-                    <input
-                      type="text"
-                      className="workspace-field-input workspace-field-details-input"
-                      placeholder="Request Details"
-                      value={row.requestDetails}
-                      onChange={(e) =>
-                        updateRequestDetails(row.id, e.target.value)
-                      }
-                      data-ocid={`landing.workspace.request_details_input.${idx + 1}`}
-                      aria-label={`Request Details for row ${row.id}`}
-                    />
-                    <button
-                      type="button"
-                      className="workspace-start-btn"
-                      onClick={() => runPipeline(row.id)}
-                      disabled={row.running}
-                      data-ocid={`landing.workspace.start_button.${idx + 1}`}
-                      aria-label={
-                        row.pipelineError && !row.running
-                          ? `Retry pipeline for row ${row.id}`
-                          : `Start pipeline for row ${row.id}`
-                      }
-                      title={
-                        row.pipelineError && !row.running
-                          ? "Pipeline failed — click to retry"
-                          : undefined
-                      }
-                    >
-                      {row.running
-                        ? "Running…"
-                        : row.pipelineError
-                          ? "Retry"
-                          : "Start"}
-                    </button>
-                  </div>
-                  <div
-                    className="workspace-pipeline"
-                    data-ocid={`landing.workspace.pipeline.${idx + 1}`}
-                  >
-                    {STAGE_ORDER.map((stage, sIdx) => (
-                      <React.Fragment key={stage}>
-                        <span
-                          className={stateClass(row.stages[stage])}
-                          data-ocid={`landing.workspace.stage.${idx + 1}.${stage}`}
-                        >
-                          <span className="ws-stage-dot" aria-hidden="true" />
-                          {STAGE_LABELS[stage]} ·{" "}
-                          {stateLabel(row.stages[stage])}
-                        </span>
-                        {sIdx < STAGE_ORDER.length - 1 && (
-                          <ChevronRight
-                            size={16}
-                            className="ws-stage-sep"
-                            aria-hidden="true"
-                          />
-                        )}
-                      </React.Fragment>
-                    ))}
-                    {row.tpLoading && (
-                      <output
-                        className="workspace-tp-status workspace-tp-loading"
-                        data-ocid={`landing.workspace.tp_loading_state.${idx + 1}`}
-                        aria-live="polite"
-                      >
-                        <span
-                          className="workspace-tp-spinner"
-                          aria-hidden="true"
-                        />
-                        Fetching TP…
-                      </output>
-                    )}
-                    {row.tpError && !row.tpLoading && (
-                      <output
-                        className="workspace-tp-status workspace-tp-error"
-                        data-ocid={`landing.workspace.tp_error_state.${idx + 1}`}
-                        aria-live="polite"
-                      >
-                        <AlertCircle size={12} aria-hidden="true" />
-                        TP fetch failed
-                      </output>
-                    )}
-                    {row.pipelineError && !row.running && (
-                      <output
-                        className="workspace-tp-status workspace-tp-error"
-                        data-ocid={`landing.workspace.pipeline_error_state.${idx + 1}`}
-                        role="alert"
-                        aria-live="assertive"
-                      >
-                        <AlertCircle size={12} aria-hidden="true" />
-                        Pipeline failed — retry
-                      </output>
-                    )}
-                    {encoderCompleted && (
-                      <span
-                        className="ws-stage-state ws-stage-completed workspace-encoder-done"
-                        data-ocid={`landing.workspace.encoder_completed_state.${idx + 1}`}
-                        aria-label={`Encoder completed for row ${row.id}; Results button enabled`}
-                      >
-                        <span className="ws-stage-dot" aria-hidden="true" />
-                        Encoder completed
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      className="workspace-results-btn"
-                      onClick={() => openResults(row.id)}
-                      disabled={resultsDisabled}
-                      aria-disabled={resultsDisabled}
-                      title={
-                        resultsDisabled
-                          ? "Results available once Encoder completes"
-                          : "Open results in a new tab"
-                      }
-                      data-ocid={`landing.workspace.results_button.${idx + 1}`}
-                      aria-label={`Open results for row ${row.id}`}
-                    >
-                      <ExternalLink size={14} aria-hidden="true" />
-                      Results
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+            {rows.map((row, idx) => (
+              <WorkspaceRow
+                key={row.id}
+                row={row}
+                index={idx}
+                ocidPrefix="landing.workspace"
+                mode="edit"
+                onRemove={removeRow}
+                onTestIdChange={updateTestId}
+                onTestIdBlur={handleTestIdBlur}
+                onRequestTypeChange={updateRequestType}
+                onRequestDetailsChange={updateRequestDetails}
+                onStart={runPipeline}
+                onOpenResults={openResultsInNewTab}
+              />
+            ))}
           </div>
         </div>
       </section>

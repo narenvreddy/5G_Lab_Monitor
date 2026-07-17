@@ -9,7 +9,18 @@ html,
 body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* The hero-mascot-area is portaled to document.body, so html/body are its
+     only ancestors. Any property that establishes a containing block here
+     (overflow:clip|hidden|auto|scroll, transform, filter, perspective,
+     will-change, contain) breaks position:fixed and makes the mascot drift
+     downward as the page grows taller. We explicitly neutralize all of them
+     so the mascot stays pinned to the viewport top-right corner.
+     Horizontal overflow is clipped at .landing-root in landing.css instead. */
+  transform: none;
+  filter: none;
+  perspective: none;
+  will-change: auto;
+  contain: none;
 }
 
 @layer base {

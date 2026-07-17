@@ -10,7 +10,15 @@
   position: relative;
   min-height: 100svh;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
+  /* NOTE: `overflow-x: hidden` was removed here because it can defeat
+     `position: fixed` on the .hero-mascot-area child (some engines treat
+     a non-`visible` overflow on the fixed element's parent as a containing
+     block, making the mascot scroll with the page instead of staying
+     pinned to the viewport). We use `overflow-x: clip` instead, which
+     clips horizontal overflow WITHOUT establishing a containing block
+     for fixed-position descendants (per CSS Overflow Module Level 3).
+     The same `overflow-x: clip` is applied to html/body in index.css. */
   background: #fffdf5;
 }
 
@@ -149,6 +157,12 @@
   flex-shrink: 0;
   z-index: 50;
   pointer-events: none;
+  /* Defensive: guarantee no ancestor establishes a containing block.
+     contain:none ensures this element is not itself a containing block
+     and explicitly opts out of containment. */
+  contain: none;
+  /* Explicitly anchor to the viewport, not any scrolling container. */
+  transform: none;
 }
 
 .float-chip {
@@ -253,6 +267,14 @@
   box-shadow: 0 0 0 3px rgba(209, 213, 219, 0.18);
 }
 
+/* ── Workspace controls row (Add test request + History) ── */
+.workspace-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
 .add-request-control {
   display: inline-flex;
   align-items: center;
@@ -276,8 +298,41 @@
 .add-request-control:active {
   transform: translateY(0);
 }
+.add-request-control:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.28);
+}
 .add-request-icon {
   color: #16a34a;
+}
+
+/* History button — sits adjacent to the Add test request control. */
+.history-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(91, 79, 207, 0.1);
+  color: #5b4fcf;
+  border: 1px solid rgba(91, 79, 207, 0.32);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.9rem;
+  font-family: "Nunito", sans-serif;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.history-control:hover {
+  background: rgba(91, 79, 207, 0.16);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(91, 79, 207, 0.18);
+}
+.history-control:active {
+  transform: translateY(0);
+}
+.history-control:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(91, 79, 207, 0.28);
 }
 
 .workspace-rows {
@@ -515,6 +570,19 @@
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
+/* Inline lucide icon inside a stage chip — aligns with the label text
+   and inherits the chip's currentColor so it matches the state. */
+.ws-stage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: currentColor;
+  vertical-align: middle;
+  margin-right: 0.1rem;
+  transition: color 0.25s ease;
+}
+
 .ws-stage-idle {
   background: #f3f3f8;
   color: #9ca3af;
@@ -597,18 +665,11 @@
   box-shadow: none;
 }
 
-/* ── Encoder completed indicator (per row) ────────── */
-.workspace-encoder-done {
-  margin-left: auto;
-  font-weight: 800;
-  font-size: 0.72rem;
-  padding: 0.25rem 0.55rem;
-  border-radius: 0.45rem;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.workspace-encoder-done + .workspace-results-btn {
-  margin-left: 0.5rem;
+/* Inline Results button — used in History mode where it replaces the
+   Start button in the row-top flex row (no margin-left:auto so it sits
+   in the natural flow next to the inputs). */
+.workspace-results-btn-inline {
+  margin-left: 0;
 }
 
 /* ── TP fetch inline status (per row) ─────────────── */
@@ -968,6 +1029,317 @@
   font-weight: 800;
 }
 
+/* ── Header meta grid (6 equal-width boxes: Test ID / Ref / Created / Processed / Duration / Script Name) ── */
+.results-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+/* Narrow tablets: 3 columns x 2 rows */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .results-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.results-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(91, 79, 207, 0.05);
+  border: 1px solid rgba(91, 79, 207, 0.16);
+  border-radius: 0.6rem;
+  min-width: 0;
+}
+.results-meta-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #6b6b8a;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.results-meta-value {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  word-break: break-word;
+  font-variant-numeric: tabular-nums;
+}
+.results-meta-link {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #5b4fcf;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1.5px;
+  cursor: pointer;
+  word-break: break-word;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.18s ease, text-decoration-thickness 0.18s ease;
+}
+.results-meta-link:hover,
+.results-meta-link:focus-visible {
+  color: #4338c4;
+  text-decoration-thickness: 2.5px;
+}
+.results-meta-link:focus-visible {
+  outline: 2px solid #5b4fcf;
+  outline-offset: 2px;
+  border-radius: 0.2rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   4-STAGE PIPELINE (Results page)
+   Animated nodes, connecting flows, stage-specific colors.
+   ═══════════════════════════════════════════════════ */
+.results-pipeline {
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  max-width: 80%;
+  margin: 1rem auto 0;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid rgba(91, 79, 207, 0.16);
+  border-radius: 1rem;
+  box-shadow: 0 4px 18px rgba(91, 79, 207, 0.08);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+  animation: hero-up 0.5s ease forwards;
+  animation-delay: 0.12s;
+  opacity: 0;
+}
+
+.results-pipeline-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.5rem 0.25rem;
+}
+
+/* Node (the circular indicator) */
+.results-pipeline-node {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.results-pipeline-node-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid rgba(var(--stage-color-rgb), 0.25);
+  background: rgba(var(--stage-color-rgb), 0.06);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.results-pipeline-node-core {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: rgba(var(--stage-color-rgb), 0.4);
+  box-shadow: 0 0 0 4px rgba(var(--stage-color-rgb), 0.12);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  z-index: 1;
+}
+.results-pipeline-node-check {
+  position: absolute;
+  color: var(--stage-color);
+  z-index: 2;
+  filter: drop-shadow(0 0 4px rgba(var(--stage-color-rgb), 0.5));
+  animation: results-node-pop 0.4s ease forwards;
+}
+@keyframes results-node-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.results-pipeline-node-spinner {
+  position: absolute;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: 2.5px solid rgba(var(--stage-color-rgb), 0.2);
+  border-top-color: var(--stage-color);
+  animation: results-spin 0.8s linear infinite;
+  z-index: 2;
+}
+
+/* Stage status states */
+.results-pipeline-stage-completed .results-pipeline-node-ring {
+  border-color: var(--stage-color);
+  background: rgba(var(--stage-color-rgb), 0.12);
+}
+.results-pipeline-stage-completed .results-pipeline-node-core {
+  background: var(--stage-color);
+  box-shadow: 0 0 0 5px rgba(var(--stage-color-rgb), 0.18), 0 0 14px
+    rgba(var(--stage-color-rgb), 0.45);
+  transform: scale(0.4);
+}
+.results-pipeline-stage-ongoing .results-pipeline-node-ring {
+  border-color: var(--stage-color);
+  background: rgba(var(--stage-color-rgb), 0.1);
+  animation: results-ring-pulse 1.6s ease-in-out infinite;
+}
+@keyframes results-ring-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--stage-color-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(var(--stage-color-rgb), 0);
+  }
+}
+.results-pipeline-stage-ongoing .results-pipeline-node-core {
+  background: var(--stage-color);
+  box-shadow: 0 0 12px rgba(var(--stage-color-rgb), 0.6);
+  animation: results-core-pulse 1.2s ease-in-out infinite;
+}
+@keyframes results-core-pulse {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.results-pipeline-stage-idle .results-pipeline-node-core {
+  background: #c4c4cf;
+  box-shadow: none;
+}
+
+/* Stage label + status text */
+.results-pipeline-label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #1a1a2e;
+  text-align: center;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+/* Icon that sits next to the stage label — inline-flex so it aligns
+   with the text baseline and respects the label's flex gap. */
+.results-pipeline-stage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--stage-color, #5b4fcf);
+  vertical-align: middle;
+  margin-right: 0.3rem;
+  transition: color 0.3s ease;
+}
+.results-pipeline-status {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.18rem 0.55rem;
+  border-radius: 2rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.results-pipeline-status-completed {
+  color: #15803d;
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.32);
+}
+.results-pipeline-status-ongoing {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.results-pipeline-status-idle {
+  color: #9ca3af;
+  background: #f3f3f8;
+  border-color: #e2e2ea;
+}
+
+/* Animated progress bar under ongoing stage */
+.results-pipeline-progress {
+  width: 80%;
+  height: 3px;
+  background: rgba(var(--stage-color-rgb), 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.15rem;
+}
+.results-pipeline-progress-bar {
+  height: 100%;
+  width: 40%;
+  background: var(--stage-color);
+  border-radius: 2px;
+  animation: results-progress-flow 1.4s ease-in-out infinite;
+}
+@keyframes results-progress-flow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* Connector between stages — static gray line, no animation */
+.results-pipeline-connector {
+  position: relative;
+  flex: 0 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  height: 3rem;
+  align-self: flex-start;
+}
+.results-pipeline-connector-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(107, 107, 138, 0.45);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+.results-pipeline-connector-flow {
+  display: none;
+}
+/* Active connector: slightly darker gray, still static (no motion) */
+.results-pipeline-connector-active .results-pipeline-connector-line {
+  background: rgba(107, 107, 138, 0.7);
+}
+
 /* Copy URL control (top-right) */
 .results-copy-url {
   display: inline-flex;
@@ -1168,7 +1540,8 @@
 @media (max-width: 768px) {
   .results-header,
   .results-section,
-  .results-footer {
+  .results-footer,
+  .results-pipeline {
     width: 92%;
     max-width: 92%;
     padding: 1.1rem 1.25rem;
@@ -1192,6 +1565,138 @@
   .results-field-box-tall {
     min-height: 6rem;
   }
+  .results-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .results-pipeline {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .results-pipeline-stage {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+  }
+  .results-pipeline-label {
+    text-align: left;
+  }
+  .results-pipeline-connector {
+    flex: 1 1 auto;
+    height: 1.5rem;
+    width: 100%;
+    align-self: stretch;
+    margin-top: 0;
+  }
+  .results-pipeline-connector-line {
+    top: 50%;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 2px;
+    width: auto;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+  }
+  .results-pipeline-connector-flow {
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+  }
+  .results-pipeline-progress {
+    width: 5rem;
+  }
+}
+
+/* Very narrow phones: meta grid collapses to a single column */
+@media (max-width: 420px) {
+  .results-meta-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── History page filter section ─────────────────────────
+   A single row of 4 filter controls (Test ID / Request Type /
+   Date / Details) that wraps on narrow screens. Sits between
+   the "Request History" heading and the workspace-section.
+   ──────────────────────────────────────────────────────── */
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  width: 80%;
+  max-width: 80%;
+  margin: 1.25rem auto 1rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(91, 79, 207, 0.16);
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 18px rgba(91, 79, 207, 0.06);
+  box-sizing: border-box;
+}
+.history-filters-title {
+  width: 100%;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #6b6b8a;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 0.15rem 0;
+}
+.history-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1 1 12rem;
+  min-width: 12rem;
+}
+.history-filter-label {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #6b6b8a;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.history-filter-input {
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.7rem;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: rgba(91, 79, 207, 0.04);
+  border: 1px solid rgba(91, 79, 207, 0.22);
+  border-radius: 0.5rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s
+    ease;
+}
+.history-filter-input::placeholder {
+  color: #9a9ab0;
+  font-weight: 500;
+}
+.history-filter-input:hover {
+  border-color: rgba(91, 79, 207, 0.4);
+}
+.history-filter-input:focus {
+  outline: none;
+  border-color: #5b4fcf;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(91, 79, 207, 0.18);
+}
+@media (max-width: 768px) {
+  .history-filters {
+    width: 92%;
+    max-width: 92%;
+    padding: 0.75rem 0.85rem;
+  }
+  .history-filter {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
 }
 
 /* ── Reduced motion ──────────────────────────────── */
@@ -1199,7 +1704,8 @@
   .results-header,
   .results-section,
   .results-footer,
-  .results-page-heading {
+  .results-page-heading,
+  .results-pipeline {
     animation: none !important;
     opacity: 1 !important;
   }
@@ -1208,6 +1714,13 @@
     border-top-color: rgba(91, 79, 207, 0.4);
   }
   .workspace-tp-spinner {
+    animation: none !important;
+  }
+  .results-pipeline-node-spinner,
+  .results-pipeline-stage-ongoing .results-pipeline-node-ring,
+  .results-pipeline-stage-ongoing .results-pipeline-node-core,
+  .results-pipeline-progress-bar,
+  .results-pipeline-node-check {
     animation: none !important;
   }
 }

@@ -1,20 +1,17 @@
 {
-  "overview": "AI Assist Modem Protocol Script Development workspace with a test request table, pipeline processing indicators, and results page.",
+  "overview": "5G Lab Monitor for AI-assisted modem protocol script development with workspace pipeline tracking and history view.",
   "features": [
-    "Workspace table with Test ID, Request Type, and Request Details",
-    "TP Test ID auto-fetch from external API",
-    "Start button driving NLP Parser, Encoder, and Script Generator indicators",
-    "Results page with copy controls for Request_Id, Request_Details, Output Prediction, Status, and Script_Status",
-    "Local persistence of test row data"
+    "Workspace rows with 4-stage pipeline indicators (NLP Output, Encoder, 3GPP data Ingestion, Script Creation)",
+    "Results button on rows once 3GPP data Ingestion completes",
+    "History page replicating the workspace with Results access to past requests",
+    "Results page with pipeline visual and copyable request details"
   ],
   "category": "productivity",
   "tags": [
     "5g",
-    "modem",
-    "protocol",
-    "script",
-    "ai-assist",
+    "lab-monitor",
+    "pipeline",
     "workspace"
   ],
-  "last_updated": "2026-07-14T06:10:42.401Z"
+  "last_updated": "2026-07-17T06:01:33.021Z"
 }

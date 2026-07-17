@@ -1,6 +1,15 @@
 import "../landing.css";
-import { Check, Copy, Link as LinkIcon } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  Binary,
+  Check,
+  Copy,
+  Database,
+  FileCode,
+  Link as LinkIcon,
+  type LucideIcon,
+  MessageSquareText,
+} from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PipelineState, type PipelineStatus } from "../backend";
 import { useActor } from "../hooks/useActor";
@@ -9,73 +18,147 @@ interface ResultsPageProps {
   rowId: string;
 }
 
-type StageKey = "nlpParser" | "encoder" | "scriptGenerator";
+/* ── 4-stage pipeline definition ──────────────────────
+   The backend only tracks 3 stages (nlpParser, encoder,
+   scriptGenerator). We map the user's 4-stage view onto
+   that state: AI Parser → nlpParser, Encoder → encoder,
+   NLP Action → derived from encoder+scriptGenerator,
+   Script Creation → scriptGenerator. The first three are
+   shown as "completed" and the last as "Ongoing" per the
+   requirement, but we still derive a live state so the
+   visual effects reflect real backend progress when it
+   arrives. */
 
-const STAGE_ORDER: StageKey[] = ["nlpParser", "encoder", "scriptGenerator"];
+type DisplayStageKey =
+  | "nlpOutput"
+  | "encoder"
+  | "dataIngestion"
+  | "scriptCreation";
 
-const STAGE_LABELS: Record<StageKey, string> = {
-  nlpParser: "NLP Parser",
-  encoder: "Encoder",
-  scriptGenerator: "Script Generator",
-};
+interface DisplayStage {
+  key: DisplayStageKey;
+  label: string;
+  color: string;
+  colorRgb: string;
+  icon: LucideIcon;
+}
 
-function stateLabel(state: PipelineState): string {
-  switch (state) {
-    case PipelineState.processing:
-      return "Processing";
-    case PipelineState.completed:
-      return "Completed";
-    default:
-      return "Idle";
+const DISPLAY_STAGES: DisplayStage[] = [
+  {
+    key: "nlpOutput",
+    label: "NLP Output",
+    color: "#5b4fcf",
+    colorRgb: "91, 79, 207",
+    icon: MessageSquareText,
+  },
+  {
+    key: "encoder",
+    label: "Encoder",
+    color: "#00C9A7",
+    colorRgb: "0, 201, 167",
+    icon: Binary,
+  },
+  {
+    key: "dataIngestion",
+    label: "3GPP data Ingestion",
+    color: "#FF6B35",
+    colorRgb: "255, 107, 53",
+    icon: Database,
+  },
+  {
+    key: "scriptCreation",
+    label: "Script Creation",
+    color: "#FFD166",
+    colorRgb: "255, 209, 102",
+    icon: FileCode,
+  },
+];
+
+type StageStatus = "completed" | "ongoing" | "idle";
+
+/**
+ * Derive the display status for each of the 4 stages from the
+ * backend PipelineStatus. Falls back to the requirement's
+ * default (first 3 completed, last ongoing) when no status yet.
+ */
+function deriveStageStatuses(stages: PipelineStatus | null): StageStatus[] {
+  if (!stages) {
+    return ["completed", "completed", "completed", "ongoing"];
   }
+  const mapState = (s: PipelineState): StageStatus => {
+    if (s === PipelineState.completed) return "completed";
+    if (s === PipelineState.processing) return "ongoing";
+    return "idle";
+  };
+  // NLP Action is "completed" once the encoder has completed
+  // (it represents the action-decoding step between encoder
+  // and script generation).
+  const nlpActionStatus: StageStatus =
+    stages.encoder === PipelineState.completed ? "completed" : "ongoing";
+  return [
+    mapState(stages.nlpParser),
+    mapState(stages.encoder),
+    nlpActionStatus,
+    mapState(stages.scriptGenerator),
+  ];
 }
 
 /**
- * Derive a human-readable overall Status from the pipeline stages.
- * - All completed  → "Completed"
- * - Any processing  → "Processing"
- * - Otherwise       → "Idle"
+ * Derive a representative Request Details string from the
+ * pipeline state. This is the only backend method available,
+ * so the display value is composed client-side from it.
  */
-function deriveStatus(stages: PipelineStatus): string {
-  const all = STAGE_ORDER.map((k) => stages[k]);
-  if (all.every((s) => s === PipelineState.completed)) return "Completed";
-  if (all.some((s) => s === PipelineState.processing)) return "Processing";
-  return "Idle";
-}
-
-/**
- * Derive a Script_Status from the final stage (scriptGenerator).
- */
-function deriveScriptStatus(stages: PipelineStatus): string {
-  const final = stages.scriptGenerator;
-  switch (final) {
-    case PipelineState.completed:
-      return "Script Generated";
-    case PipelineState.processing:
-      return "Generating Script…";
-    default:
-      return "Awaiting Generation";
+function deriveRequestDetails(
+  stages: PipelineStatus | null,
+  rowId: string,
+): string {
+  if (!stages) {
+    return `Test request ${rowId} — details captured from workspace submission. Awaiting pipeline status from backend.`;
   }
-}
-
-/**
- * Build a representative Output Prediction string from the pipeline state.
- * This is a read-only display value derived from available backend state.
- */
-function deriveOutputPrediction(stages: PipelineStatus, rowId: string): string {
-  const lines = STAGE_ORDER.map((k) => {
-    return `${STAGE_LABELS[k]}: ${stateLabel(stages[k])}`;
-  });
-  lines.push("");
-  lines.push(`Request ${rowId} pipeline summary derived from backend state.`);
+  const lines = [
+    `Request: req-${rowId}`,
+    `AI Parser: ${stages.nlpParser}`,
+    `Encoder: ${stages.encoder}`,
+    `Script Generator: ${stages.scriptGenerator}`,
+    "",
+    "Details derived from the latest pipeline status response (actor.getPipelineStatus).",
+  ];
   return lines.join("\n");
 }
 
-interface DisplayField {
-  key: string;
-  label: string;
-  value: string;
-  tall: boolean;
+/**
+ * Derive an Output Prediction summary from the pipeline state.
+ */
+function deriveOutputPrediction(
+  stages: PipelineStatus | null,
+  rowId: string,
+): string {
+  if (!stages) {
+    return `Output prediction for request req-${rowId} will populate once the pipeline reports status.`;
+  }
+  const statuses = deriveStageStatuses(stages);
+  const lines = DISPLAY_STAGES.map((s, i) => `${s.label}: ${statuses[i]}`);
+  lines.push("");
+  lines.push(`Predicted modem protocol script output for req-${rowId}.`);
+  return lines.join("\n");
+}
+
+/**
+ * Derive a Script Name from the row id + pipeline state.
+ */
+function deriveScriptName(
+  stages: PipelineStatus | null,
+  rowId: string,
+): string {
+  const base = `modem_protocol_req-${rowId}`;
+  if (!stages) return `${base}_draft`;
+  if (stages.scriptGenerator === PipelineState.completed) {
+    return `${base}_v1.script`;
+  }
+  if (stages.scriptGenerator === PipelineState.processing) {
+    return `${base}_generating…`;
+  }
+  return `${base}_pending`;
 }
 
 export function ResultsPage({ rowId }: ResultsPageProps) {
@@ -84,19 +167,44 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
   const [loading, setLoading] = useState(true);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedUrl, setCopiedUrl] = useState(false);
+  const [apiCallCount, setApiCallCount] = useState(0);
+
+  // Track first-seen + last-completed timestamps for the header.
+  const firstSeenRef = useRef<number | null>(null);
+  const [createdTs, setCreatedTs] = useState<string>("—");
+  const [processedTs, setProcessedTs] = useState<string>("—");
 
   // Fetch pipeline status for the row's test request id
   useEffect(() => {
     let cancelled = false;
     const testRequestId = `req-${rowId}`;
+    if (firstSeenRef.current === null) {
+      firstSeenRef.current = Date.now();
+    }
     const fetchStatus = async () => {
       if (!actor) return;
       try {
         const status: PipelineStatus =
           await actor.getPipelineStatus(testRequestId);
-        if (!cancelled) {
-          setStages(status);
-          setLoading(false);
+        if (cancelled) return;
+        setStages(status);
+        setLoading(false);
+        setApiCallCount((c) => c + 1);
+        // Created timestamp: first successful fetch.
+        setCreatedTs((prev) =>
+          prev === "—"
+            ? new Date(firstSeenRef.current ?? Date.now()).toLocaleString()
+            : prev,
+        );
+        // Processed timestamp: when all 3 backend stages are completed.
+        const allDone =
+          status.nlpParser === PipelineState.completed &&
+          status.encoder === PipelineState.completed &&
+          status.scriptGenerator === PipelineState.completed;
+        if (allDone) {
+          setProcessedTs((prev) =>
+            prev === "—" ? new Date().toLocaleString() : prev,
+          );
         }
       } catch {
         if (!cancelled) {
@@ -135,27 +243,28 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
     }
   }, []);
 
-  // Derive display values from query param + available pipeline state
+  // Derive display values
   const requestIdValue = `req-${rowId}`;
-  const requestDetailsValue = `Test request ${rowId} — details captured from workspace submission.`;
-  const statusValue = stages ? deriveStatus(stages) : "Idle";
-  const scriptStatusValue = stages
-    ? deriveScriptStatus(stages)
-    : "Awaiting Generation";
-  const outputPredictionValue = stages
-    ? deriveOutputPrediction(stages, rowId)
-    : "Output prediction will populate once the pipeline reports status.";
+  const stageStatuses = deriveStageStatuses(stages);
+  const requestDetailsValue = deriveRequestDetails(stages, rowId);
+  const outputPredictionValue = deriveOutputPrediction(stages, rowId);
+  const scriptNameValue = deriveScriptName(stages, rowId);
 
-  const fields: DisplayField[] = [
-    {
-      key: "Request_Id",
-      label: "Request_Id",
-      value: requestIdValue,
-      tall: false,
-    },
+  // Header meta items
+  const headerItems = [
+    { label: "Test ID", value: requestIdValue },
+    { label: "Request Ref. Number", value: `REF-${rowId}` },
+    { label: "Created", value: createdTs },
+    { label: "Processed", value: processedTs },
+    { label: "Duration", value: String(apiCallCount) },
+    { label: "Script Name", value: scriptNameValue, isScriptName: true },
+  ];
+
+  // Display boxes
+  const boxes = [
     {
       key: "Request_Details",
-      label: "Request_Details",
+      label: "Request Details",
       value: requestDetailsValue,
       tall: true,
     },
@@ -164,13 +273,6 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
       label: "Output Prediction",
       value: outputPredictionValue,
       tall: true,
-    },
-    { key: "Status", label: "Status", value: statusValue, tall: false },
-    {
-      key: "Script_Status",
-      label: "Script_Status",
-      value: scriptStatusValue,
-      tall: false,
     },
   ];
 
@@ -187,11 +289,46 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
       <header className="results-header" data-ocid="results.header.section">
         <div className="results-header-left">
           <span className="results-tag">Results</span>
-          <h1 className="results-title">Request Details</h1>
-          <p className="results-sub">
-            Read-only snapshot for request <strong>req-{rowId}</strong>. Use the
-            copy controls to capture any field.
-          </p>
+          <h2 className="results-title">Request Snapshot</h2>
+          <div
+            className="results-meta-grid"
+            data-ocid="results.header.meta.list"
+          >
+            {headerItems.map((item, idx) => {
+              const isScriptName = (item as { isScriptName?: boolean })
+                .isScriptName;
+              const scriptValue = String(item.value);
+              const hasScript = isScriptName && scriptValue.trim() !== "";
+              return (
+                <div
+                  key={item.label}
+                  className="results-meta-item"
+                  data-ocid={`results.header.meta.item.${idx + 1}`}
+                >
+                  <span className="results-meta-label">{item.label}</span>
+                  {hasScript ? (
+                    <button
+                      type="button"
+                      className="results-meta-link"
+                      data-ocid={`results.header.meta.script_name.link.${idx + 1}`}
+                      onClick={() => {
+                        window.open(
+                          scriptValue,
+                          "_blank",
+                          "noopener,noreferrer",
+                        );
+                      }}
+                      title={`Open ${scriptValue} in a new tab`}
+                    >
+                      {scriptValue}
+                    </button>
+                  ) : (
+                    <span className="results-meta-value">{item.value}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
         <button
           type="button"
@@ -209,6 +346,91 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
         </button>
       </header>
 
+      {/* 4-stage pipeline with visual effects */}
+      <section
+        className="results-pipeline"
+        data-ocid="results.pipeline.section"
+        aria-label="Pipeline status"
+      >
+        {DISPLAY_STAGES.map((stage, idx) => {
+          const status = stageStatuses[idx];
+          return (
+            <React.Fragment key={stage.key}>
+              <div
+                className={`results-pipeline-stage results-pipeline-stage-${status}`}
+                style={
+                  {
+                    "--stage-color": stage.color,
+                    "--stage-color-rgb": stage.colorRgb,
+                  } as React.CSSProperties
+                }
+                data-ocid={`results.pipeline.stage.item.${idx + 1}`}
+              >
+                <div className="results-pipeline-node" aria-hidden="true">
+                  <div className="results-pipeline-node-ring" />
+                  <div className="results-pipeline-node-core" />
+                  {status === "completed" && (
+                    <Check
+                      className="results-pipeline-node-check"
+                      size={16}
+                      strokeWidth={3}
+                      aria-hidden="true"
+                    />
+                  )}
+                  {status === "ongoing" && (
+                    <div
+                      className="results-pipeline-node-spinner"
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+                <div className="results-pipeline-label">
+                  {(() => {
+                    const Icon = stage.icon;
+                    return (
+                      <Icon
+                        size={16}
+                        strokeWidth={2.5}
+                        className="results-pipeline-stage-icon"
+                        aria-hidden="true"
+                      />
+                    );
+                  })()}
+                  {stage.label}
+                </div>
+                <div
+                  className={`results-pipeline-status results-pipeline-status-${status}`}
+                >
+                  {status === "completed"
+                    ? "completed"
+                    : status === "ongoing"
+                      ? "Ongoing"
+                      : "Idle"}
+                </div>
+                {status === "ongoing" && (
+                  <div className="results-pipeline-progress" aria-hidden="true">
+                    <div className="results-pipeline-progress-bar" />
+                  </div>
+                )}
+              </div>
+              {idx < DISPLAY_STAGES.length - 1 && (
+                <div
+                  className={`results-pipeline-connector ${
+                    stageStatuses[idx] === "completed"
+                      ? "results-pipeline-connector-active"
+                      : ""
+                  }`}
+                  aria-hidden="true"
+                >
+                  <div className="results-pipeline-connector-line" />
+                  <div className="results-pipeline-connector-flow" />
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </section>
+
       <main className="results-section" data-ocid="results.content.section">
         {loading && (
           <output
@@ -223,27 +445,27 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
 
         {!loading && (
           <div className="results-fields" data-ocid="results.fields.list">
-            {fields.map((field, idx) => (
+            {boxes.map((box, idx) => (
               <div
-                key={field.key}
-                className={`results-field ${field.tall ? "results-field-tall" : ""}`}
+                key={box.key}
+                className="results-field"
                 data-ocid={`results.field.item.${idx + 1}`}
               >
                 <div className="results-field-header">
                   <label
                     className="results-field-label"
-                    htmlFor={`results-${field.key}`}
+                    htmlFor={`results-${box.key}`}
                   >
-                    {field.label}
+                    {box.label}
                   </label>
                   <button
                     type="button"
                     className="results-field-copy"
-                    onClick={() => handleCopy(field.key, field.value)}
+                    onClick={() => handleCopy(box.key, box.value)}
                     data-ocid={`results.field.copy_button.${idx + 1}`}
-                    aria-label={`Copy ${field.label}`}
+                    aria-label={`Copy ${box.label}`}
                   >
-                    {copiedKey === field.key ? (
+                    {copiedKey === box.key ? (
                       <Check size={15} strokeWidth={3} aria-hidden="true" />
                     ) : (
                       <Copy size={15} strokeWidth={2.5} aria-hidden="true" />
@@ -251,12 +473,12 @@ export function ResultsPage({ rowId }: ResultsPageProps) {
                   </button>
                 </div>
                 <div
-                  id={`results-${field.key}`}
-                  className={`results-field-box ${field.tall ? "results-field-box-tall" : ""}`}
+                  id={`results-${box.key}`}
+                  className={`results-field-box ${box.tall ? "results-field-box-tall" : ""}`}
                   data-ocid={`results.field.value.${idx + 1}`}
-                  aria-label={field.label}
+                  aria-label={box.label}
                 >
-                  {field.value}
+                  {box.value}
                 </div>
               </div>
             ))}

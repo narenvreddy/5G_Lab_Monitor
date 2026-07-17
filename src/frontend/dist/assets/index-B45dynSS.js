@@ -195,7 +195,7 @@ function base32Decode(input) {
   let skip = 0;
   let byte = 0;
   const output = new Uint8Array(input.length * 4 / 3 | 0);
-  let o2 = 0;
+  let o = 0;
   function decodeChar(char) {
     let val = lookupTable[char.toLowerCase()];
     if (val === void 0) {
@@ -205,7 +205,7 @@ function base32Decode(input) {
     byte |= val >>> skip;
     skip += 5;
     if (skip >= 8) {
-      output[o2++] = byte;
+      output[o++] = byte;
       skip -= 8;
       if (skip > 0) {
         byte = val << 5 - skip & 255;
@@ -217,7 +217,7 @@ function base32Decode(input) {
   for (const c2 of input) {
     decodeChar(c2);
   }
-  return output.slice(0, o2);
+  return output.slice(0, o);
 }
 const lookUpTable = new Uint32Array([
   0,
@@ -4481,16 +4481,16 @@ function N() {
 function p(t, e) {
   const n = h(t);
   if (n === 1 / 0) {
-    const o2 = [];
+    const o = [];
     let i = B();
     for (; i !== R; )
-      o2.push(i), i = B();
-    return o2;
+      o.push(i), i = B();
+    return o;
   }
   const s = new Array(n);
-  for (let o2 = 0; o2 < n; o2++) {
+  for (let o = 0; o < n; o++) {
     const i = B();
-    s[o2] = i;
+    s[o] = i;
   }
   return s;
 }
@@ -4512,14 +4512,14 @@ function b(t) {
 function j(t, e) {
   const n = h(t), s = {};
   if (n === 1 / 0) {
-    let [o2, i] = N();
-    for (; o2 !== c.Simple && i !== u.Break; ) {
+    let [o, i] = N();
+    for (; o !== c.Simple && i !== u.Break; ) {
       const A = F(i), I = B();
-      s[A] = I, [o2, i] = N();
+      s[A] = I, [o, i] = N();
     }
     return s;
   }
-  for (let o2 = 0; o2 < n; o2++) {
+  for (let o = 0; o < n; o++) {
     const [i, A] = N();
     if (i !== c.TextString)
       throw new w("Map keys must be text strings");
@@ -6255,7 +6255,7 @@ function pprefix(hasEvenY) {
 function SWUFpSqrtRatio(Fp3, Z2) {
   const q2 = Fp3.ORDER;
   let l2 = _0n$4;
-  for (let o2 = q2 - _1n$5; o2 % _2n$5 === _0n$4; o2 /= _2n$5)
+  for (let o = q2 - _1n$5; o % _2n$5 === _0n$4; o /= _2n$5)
     l2 += _1n$5;
   const c1 = l2;
   const _2n_pow_c1_1 = _2n$5 << c1 - _1n$5 - _1n$5;
@@ -16294,11 +16294,11 @@ function shallowEqualObjects(a2, b2) {
 function isPlainArray(value) {
   return Array.isArray(value) && value.length === Object.keys(value).length;
 }
-function isPlainObject(o2) {
-  if (!hasObjectPrototype(o2)) {
+function isPlainObject(o) {
+  if (!hasObjectPrototype(o)) {
     return false;
   }
-  const ctor = o2.constructor;
+  const ctor = o.constructor;
   if (ctor === void 0) {
     return true;
   }
@@ -16309,13 +16309,13 @@ function isPlainObject(o2) {
   if (!prot.hasOwnProperty("isPrototypeOf")) {
     return false;
   }
-  if (Object.getPrototypeOf(o2) !== Object.prototype) {
+  if (Object.getPrototypeOf(o) !== Object.prototype) {
     return false;
   }
   return true;
 }
-function hasObjectPrototype(o2) {
-  return Object.prototype.toString.call(o2) === "[object Object]";
+function hasObjectPrototype(o) {
+  return Object.prototype.toString.call(o) === "[object Object]";
 }
 function sleep(timeout2) {
   return new Promise((resolve) => {
@@ -18886,7 +18886,7 @@ react_production.version = "19.1.5";
   react.exports = react_production;
 }
 var reactExports = react.exports;
-const o = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+const React$2 = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
 var QueryClientContext = reactExports.createContext(
   void 0
 );
@@ -32904,7 +32904,7 @@ function checkDCE() {
 }
 var clientExports = client.exports;
 const ReactDOM = /* @__PURE__ */ getDefaultExportFromCjs(clientExports);
-const RobotMascot = o.memo(function RobotMascot2({
+const RobotMascot = React$2.memo(function RobotMascot2({
   size = 80,
   mood = "happy",
   className = ""
@@ -33009,7 +33009,7 @@ const RobotMascot = o.memo(function RobotMascot2({
     }
   );
 });
-class ErrorBoundary extends o.Component {
+class ErrorBoundary extends React$2.Component {
   constructor(props) {
     super(props);
     __publicField(this, "handleReload", () => {
@@ -33149,16 +33149,62 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$7 = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$7);
+const __iconNode$b = [
+  ["rect", { x: "14", y: "14", width: "4", height: "6", rx: "2", key: "p02svl" }],
+  ["rect", { x: "6", y: "4", width: "4", height: "6", rx: "2", key: "xm4xkj" }],
+  ["path", { d: "M6 20h4", key: "1i6q5t" }],
+  ["path", { d: "M14 10h4", key: "ru81e7" }],
+  ["path", { d: "M6 14h2v6", key: "16z9wg" }],
+  ["path", { d: "M14 4h2v6", key: "1idq9u" }]
+];
+const Binary = createLucideIcon("binary", __iconNode$b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$6 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$6);
+const __iconNode$a = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$a);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$9);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$8);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$7);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+];
+const Copy = createLucideIcon("copy", __iconNode$6);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33166,11 +33212,11 @@ const ChevronRight = createLucideIcon("chevron-right", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$5);
+const Database = createLucideIcon("database", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33178,10 +33224,12 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M10 12.5 8 15l2 2.5", key: "1tg20x" }],
+  ["path", { d: "m14 12.5 2 2.5-2 2.5", key: "yinavb" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z", key: "1mlx9k" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$4);
+const FileCode = createLucideIcon("file-code", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33189,11 +33237,10 @@ const Copy = createLucideIcon("copy", __iconNode$4);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$3 = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
+  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
 ];
-const ExternalLink = createLucideIcon("external-link", __iconNode$3);
+const Link = createLucideIcon("link", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33201,10 +33248,11 @@ const ExternalLink = createLucideIcon("external-link", __iconNode$3);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
-  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
-  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
+  ["path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", key: "1lielz" }],
+  ["path", { d: "M13 8H7", key: "14i4kc" }],
+  ["path", { d: "M17 12H7", key: "16if0g" }]
 ];
-const Link = createLucideIcon("link", __iconNode$2);
+const MessageSquareText = createLucideIcon("message-square-text", __iconNode$2);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -33759,11 +33807,719 @@ function createActor(canisterId, _uploadFile, _downloadFile, options = {}) {
   });
   return new Backend(actor, _uploadFile, _downloadFile, options.processError);
 }
+const IDLE_STATES = {
+  nlpParser: PipelineState.idle,
+  encoder: PipelineState.idle,
+  scriptGenerator: PipelineState.idle
+};
+const DISPLAY_STAGES$1 = [
+  {
+    key: "nlpOutput",
+    label: "NLP Output",
+    icon: MessageSquareText,
+    source: "nlpParser"
+  },
+  {
+    key: "encoder",
+    label: "Encoder",
+    icon: Binary,
+    source: "encoder"
+  },
+  {
+    key: "dataIngestion",
+    label: "3GPP data Ingestion",
+    icon: Database,
+    source: "scriptGenerator"
+  },
+  {
+    key: "scriptCreation",
+    label: "Script Creation",
+    icon: FileCode,
+    source: "scriptGenerator"
+  }
+];
+const STORAGE_KEY = "tp_workspace_rows";
+const SEED_ROWS = [
+  {
+    id: 1,
+    testId: "TC-5G-001",
+    requestType: "Attach Procedure",
+    requestDetails: "Verify UE initial attach to 5G core via AMF, including registration and PDU session setup.",
+    stages: {
+      nlpParser: PipelineState.completed,
+      encoder: PipelineState.completed,
+      scriptGenerator: PipelineState.completed
+    },
+    createdAt: "2026-07-15T09:12:00.000Z",
+    completedAt: "2026-07-15T09:18:42.000Z"
+  },
+  {
+    id: 2,
+    testId: "TC-5G-002",
+    requestType: "Authentication AKA",
+    requestDetails: "Validate 5G-AKA authentication flow between UE, AMF and AUSF with mutual challenge-response.",
+    stages: {
+      nlpParser: PipelineState.completed,
+      encoder: PipelineState.completed,
+      scriptGenerator: PipelineState.completed
+    },
+    createdAt: "2026-07-16T11:03:00.000Z",
+    completedAt: "2026-07-16T11:09:17.000Z"
+  },
+  {
+    id: 3,
+    testId: "TC-5G-003",
+    requestType: "Handover Inter-NR",
+    requestDetails: "Test inter-gNB handover within the same NR frequency band while maintaining session continuity.",
+    stages: {
+      nlpParser: PipelineState.completed,
+      encoder: PipelineState.completed,
+      scriptGenerator: PipelineState.completed
+    },
+    createdAt: "2026-07-16T14:47:00.000Z",
+    completedAt: "2026-07-16T14:55:31.000Z"
+  },
+  {
+    id: 4,
+    testId: "TC-5G-004",
+    requestType: "PDU Session Establishment",
+    requestDetails: "Confirm PDU session establishment request from UE to SMF over N1 interface with QoS flow setup.",
+    stages: {
+      nlpParser: PipelineState.completed,
+      encoder: PipelineState.completed,
+      scriptGenerator: PipelineState.completed
+    },
+    createdAt: "2026-07-17T08:21:00.000Z",
+    completedAt: "2026-07-17T08:27:05.000Z"
+  },
+  {
+    id: 5,
+    testId: "TC-5G-005",
+    requestType: "RRC Connection Setup",
+    requestDetails: "Check RRC connection setup and release cycle between UE and gNB including SRB1 establishment.",
+    stages: {
+      nlpParser: PipelineState.completed,
+      encoder: PipelineState.completed,
+      scriptGenerator: PipelineState.completed
+    },
+    createdAt: "2026-07-17T16:34:00.000Z",
+    completedAt: "2026-07-17T16:41:58.000Z"
+  }
+];
+function toTestRequestRow(r2) {
+  var _a2, _b2, _c2;
+  return {
+    id: r2.id,
+    testId: r2.testId ?? "",
+    requestType: r2.requestType ?? "",
+    requestDetails: r2.requestDetails ?? "",
+    stages: {
+      nlpParser: ((_a2 = r2.stages) == null ? void 0 : _a2.nlpParser) ?? PipelineState.idle,
+      encoder: ((_b2 = r2.stages) == null ? void 0 : _b2.encoder) ?? PipelineState.idle,
+      scriptGenerator: ((_c2 = r2.stages) == null ? void 0 : _c2.scriptGenerator) ?? PipelineState.idle
+    },
+    running: false,
+    tpLoading: false,
+    tpError: false,
+    pipelineError: false,
+    createdAt: r2.createdAt,
+    completedAt: r2.completedAt
+  };
+}
+function loadPersistedRows() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const seeded = SEED_ROWS.map(toTestRequestRow);
+      persistRows(seeded);
+      return seeded;
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      const seeded = SEED_ROWS.map(toTestRequestRow);
+      persistRows(seeded);
+      return seeded;
+    }
+    return parsed.map(toTestRequestRow);
+  } catch {
+    return [];
+  }
+}
+function stateClass(state) {
+  switch (state) {
+    case PipelineState.processing:
+      return "ws-stage-state ws-stage-processing";
+    case PipelineState.completed:
+      return "ws-stage-state ws-stage-completed";
+    default:
+      return "ws-stage-state ws-stage-idle";
+  }
+}
+function stateLabel(state) {
+  switch (state) {
+    case PipelineState.processing:
+      return "Processing";
+    case PipelineState.completed:
+      return "completed";
+    default:
+      return "idle";
+  }
+}
+function persistRows(rows) {
+  try {
+    const persisted = rows.map((r2) => ({
+      id: r2.id,
+      testId: r2.testId,
+      requestType: r2.requestType,
+      requestDetails: r2.requestDetails,
+      stages: {
+        nlpParser: r2.stages.nlpParser,
+        encoder: r2.stages.encoder,
+        scriptGenerator: r2.stages.scriptGenerator
+      },
+      createdAt: r2.createdAt,
+      completedAt: r2.completedAt
+    }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+  } catch {
+  }
+}
+function openResultsInNewTab(rowId) {
+  const url = `${window.location.origin}${window.location.pathname}?result=${rowId}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+function openHistoryInNewTab() {
+  const url = `${window.location.origin}${window.location.pathname}?history=1`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+function WorkspaceRow({
+  row,
+  index: index2,
+  ocidPrefix,
+  mode,
+  onRemove,
+  onTestIdChange,
+  onTestIdBlur,
+  onRequestTypeChange,
+  onRequestDetailsChange,
+  onStart,
+  onOpenResults
+}) {
+  const threeGppCompleted = row.stages.scriptGenerator === PipelineState.completed;
+  const isHistory = mode === "history";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: "workspace-row",
+      "data-ocid": `${ocidPrefix}.item.${index2 + 1}`,
+      children: [
+        !isHistory && onRemove && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            className: "workspace-row-close",
+            onClick: () => onRemove(row.id),
+            "data-ocid": `${ocidPrefix}.delete_button.${index2 + 1}`,
+            "aria-label": `Remove test request row ${row.id}`,
+            title: `Remove row ${row.id}`,
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 12, strokeWidth: 3, "aria-hidden": "true" })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-row-top", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-serial", children: row.id }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              className: "workspace-test-id-input",
+              placeholder: "Test ID",
+              value: row.testId,
+              onChange: onTestIdChange ? (e) => onTestIdChange(row.id, e.target.value) : void 0,
+              onBlur: onTestIdBlur ? (e) => onTestIdBlur(row.id, e.target.value) : void 0,
+              readOnly: isHistory,
+              "data-ocid": `${ocidPrefix}.input.${index2 + 1}`,
+              "aria-label": `Test ID for row ${row.id}`
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              className: "workspace-field-input workspace-field-type-input",
+              placeholder: "Request Type",
+              value: row.requestType,
+              onChange: onRequestTypeChange ? (e) => onRequestTypeChange(row.id, e.target.value) : void 0,
+              readOnly: isHistory,
+              "data-ocid": `${ocidPrefix}.request_type_input.${index2 + 1}`,
+              "aria-label": `Request Type for row ${row.id}`
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              className: "workspace-field-input workspace-field-details-input",
+              placeholder: "Request Details",
+              value: row.requestDetails,
+              onChange: onRequestDetailsChange ? (e) => onRequestDetailsChange(row.id, e.target.value) : void 0,
+              readOnly: isHistory,
+              "data-ocid": `${ocidPrefix}.request_details_input.${index2 + 1}`,
+              "aria-label": `Request Details for row ${row.id}`
+            }
+          ),
+          isHistory ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "workspace-results-btn workspace-results-btn-inline",
+              onClick: () => onOpenResults == null ? void 0 : onOpenResults(row.id),
+              "data-ocid": `${ocidPrefix}.results_button.${index2 + 1}`,
+              "aria-label": `Open results for row ${row.id} in a new tab`,
+              title: "Open results in a new tab",
+              children: "Results"
+            }
+          ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "workspace-start-btn",
+              onClick: () => onStart == null ? void 0 : onStart(row.id),
+              disabled: row.running,
+              "data-ocid": `${ocidPrefix}.start_button.${index2 + 1}`,
+              "aria-label": row.pipelineError && !row.running ? `Retry pipeline for row ${row.id}` : `Start pipeline for row ${row.id}`,
+              title: row.pipelineError && !row.running ? "Pipeline failed — click to retry" : void 0,
+              children: row.running ? "Running…" : row.pipelineError ? "Retry" : "Start"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: "workspace-pipeline",
+            "data-ocid": `${ocidPrefix}.pipeline.${index2 + 1}`,
+            children: [
+              DISPLAY_STAGES$1.map((stage, sIdx) => {
+                const StageIcon = stage.icon;
+                const state = row.stages[stage.source];
+                return /* @__PURE__ */ jsxRuntimeExports.jsxs(React$2.Fragment, { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "span",
+                    {
+                      className: stateClass(state),
+                      "data-ocid": `${ocidPrefix}.stage.${index2 + 1}.${stage.key}`,
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(
+                          StageIcon,
+                          {
+                            size: 13,
+                            className: "ws-stage-icon",
+                            "aria-hidden": "true"
+                          }
+                        ),
+                        stage.label,
+                        " · ",
+                        stateLabel(state)
+                      ]
+                    }
+                  ),
+                  sIdx < DISPLAY_STAGES$1.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    ChevronRight,
+                    {
+                      size: 16,
+                      className: "ws-stage-sep",
+                      "aria-hidden": "true"
+                    }
+                  )
+                ] }, stage.key);
+              }),
+              row.tpLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "output",
+                {
+                  className: "workspace-tp-status workspace-tp-loading",
+                  "data-ocid": `${ocidPrefix}.tp_loading_state.${index2 + 1}`,
+                  "aria-live": "polite",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-tp-spinner", "aria-hidden": "true" }),
+                    "Fetching TP…"
+                  ]
+                }
+              ),
+              row.tpError && !row.tpLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "output",
+                {
+                  className: "workspace-tp-status workspace-tp-error",
+                  "data-ocid": `${ocidPrefix}.tp_error_state.${index2 + 1}`,
+                  "aria-live": "polite",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 12, "aria-hidden": "true" }),
+                    "TP fetch failed"
+                  ]
+                }
+              ),
+              row.pipelineError && !row.running && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "output",
+                {
+                  className: "workspace-tp-status workspace-tp-error",
+                  "data-ocid": `${ocidPrefix}.pipeline_error_state.${index2 + 1}`,
+                  role: "alert",
+                  "aria-live": "assertive",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 12, "aria-hidden": "true" }),
+                    "Pipeline failed — retry"
+                  ]
+                }
+              ),
+              !isHistory && threeGppCompleted && onOpenResults && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  className: "workspace-results-btn",
+                  onClick: () => onOpenResults(row.id),
+                  "data-ocid": `${ocidPrefix}.results_button.${index2 + 1}`,
+                  "aria-label": `Open results for row ${row.id} in a new tab`,
+                  title: "Open results in a new tab",
+                  children: "Results"
+                }
+              )
+            ]
+          }
+        )
+      ]
+    }
+  );
+}
+const UNDATED_KEY = "__undated__";
+function rowTimestamp(row) {
+  var _a2, _b2;
+  if ((_a2 = row.completedAt) == null ? void 0 : _a2.trim()) return row.completedAt;
+  if ((_b2 = row.createdAt) == null ? void 0 : _b2.trim()) return row.createdAt;
+  return null;
+}
+function dateKeyFromTimestamp(ts) {
+  const d2 = new Date(ts);
+  if (Number.isNaN(d2.getTime())) return UNDATED_KEY;
+  const y2 = d2.getFullYear();
+  const m2 = String(d2.getMonth() + 1).padStart(2, "0");
+  const day = String(d2.getDate()).padStart(2, "0");
+  return `${y2}-${m2}-${day}`;
+}
+function friendlyLabel(key) {
+  if (key === UNDATED_KEY) return "Undated";
+  const [y2, m2, d2] = key.split("-").map(Number);
+  const dt = new Date(y2, m2 - 1, d2);
+  return dt.toLocaleDateString(void 0, {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+function groupRowsByDate(rows) {
+  const buckets = /* @__PURE__ */ new Map();
+  for (const row of rows) {
+    const ts = rowTimestamp(row);
+    const key = ts ? dateKeyFromTimestamp(ts) : UNDATED_KEY;
+    const list = buckets.get(key) ?? [];
+    list.push(row);
+    buckets.set(key, list);
+  }
+  for (const list of buckets.values()) {
+    list.sort((a2, b2) => {
+      const ta = rowTimestamp(a2);
+      const tb = rowTimestamp(b2);
+      if (!ta && !tb) return a2.id - b2.id;
+      if (!ta) return 1;
+      if (!tb) return -1;
+      return new Date(tb).getTime() - new Date(ta).getTime();
+    });
+  }
+  const datedKeys = [...buckets.keys()].filter((k2) => k2 !== UNDATED_KEY);
+  datedKeys.sort((a2, b2) => a2 < b2 ? 1 : a2 > b2 ? -1 : 0);
+  const groups = datedKeys.map((key) => ({
+    key,
+    label: friendlyLabel(key),
+    rows: buckets.get(key) ?? []
+  }));
+  if (buckets.has(UNDATED_KEY)) {
+    groups.push({
+      key: UNDATED_KEY,
+      label: friendlyLabel(UNDATED_KEY),
+      rows: buckets.get(UNDATED_KEY) ?? []
+    });
+  }
+  return groups;
+}
+function HistoryPage() {
+  const [rows, setRows] = reactExports.useState([]);
+  const [filterTestId, setFilterTestId] = reactExports.useState("");
+  const [filterRequestType, setFilterRequestType] = reactExports.useState("");
+  const [filterDate, setFilterDate] = reactExports.useState("");
+  const [filterDetails, setFilterDetails] = reactExports.useState("");
+  reactExports.useEffect(() => {
+    setRows(loadPersistedRows());
+  }, []);
+  const filteredRows = reactExports.useMemo(() => {
+    const testIdQ = filterTestId.trim().toLowerCase();
+    const typeQ = filterRequestType.trim().toLowerCase();
+    const detailsQ = filterDetails.trim().toLowerCase();
+    const hasDate = filterDate.trim().length > 0;
+    return rows.filter((row) => {
+      var _a2, _b2;
+      if (testIdQ && !row.testId.toLowerCase().includes(testIdQ)) return false;
+      if (typeQ && !row.requestType.toLowerCase().includes(typeQ)) return false;
+      if (detailsQ && !row.requestDetails.toLowerCase().includes(detailsQ))
+        return false;
+      if (hasDate) {
+        const ts = ((_a2 = row.completedAt) == null ? void 0 : _a2.trim()) || ((_b2 = row.createdAt) == null ? void 0 : _b2.trim()) || "";
+        if (!ts) return false;
+        if (dateKeyFromTimestamp(ts) !== filterDate) return false;
+      }
+      return true;
+    });
+  }, [rows, filterTestId, filterRequestType, filterDate, filterDetails]);
+  const groups = reactExports.useMemo(() => groupRowsByDate(filteredRows), [filteredRows]);
+  const [collapsed, setCollapsed] = reactExports.useState({});
+  const toggle = (key) => setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  let runningIndex = 0;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-root", "data-ocid": "history.page", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-blob results-blob-purple", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-blob results-blob-teal", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "results-page-heading", "data-ocid": "history.page_heading", children: [
+      "AI assist Modem Protocol",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "results-page-heading-accent", children: "Script Development" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "results-header", "data-ocid": "history.header.section", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-header-left", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "results-tag", children: "History" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "results-title", children: "Request History" })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "history-filters", "data-ocid": "history.filters.section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "history-filters-title", "data-ocid": "history.filters.title", children: "Filters" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "history-filter", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "label",
+          {
+            className: "history-filter-label",
+            htmlFor: "history-filter-test-id",
+            children: "Test ID"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            id: "history-filter-test-id",
+            type: "text",
+            className: "history-filter-input",
+            placeholder: "e.g. TC-5G-001",
+            value: filterTestId,
+            onChange: (e) => setFilterTestId(e.target.value),
+            "data-ocid": "history.filters.test_id.input"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "history-filter", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "label",
+          {
+            className: "history-filter-label",
+            htmlFor: "history-filter-request-type",
+            children: "Request Type"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            id: "history-filter-request-type",
+            type: "text",
+            className: "history-filter-input",
+            placeholder: "e.g. Attach Procedure",
+            value: filterRequestType,
+            onChange: (e) => setFilterRequestType(e.target.value),
+            "data-ocid": "history.filters.request_type.input"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "history-filter", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "history-filter-label", htmlFor: "history-filter-date", children: "Date" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            id: "history-filter-date",
+            type: "date",
+            className: "history-filter-input",
+            value: filterDate,
+            onChange: (e) => setFilterDate(e.target.value),
+            "data-ocid": "history.filters.date.input"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "history-filter", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "label",
+          {
+            className: "history-filter-label",
+            htmlFor: "history-filter-details",
+            children: "Details"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            id: "history-filter-details",
+            type: "text",
+            className: "history-filter-input",
+            placeholder: "Search request details",
+            value: filterDetails,
+            onChange: (e) => setFilterDetails(e.target.value),
+            "data-ocid": "history.filters.details.input"
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "workspace-section", "data-ocid": "history.workspace.section", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-rows", "data-ocid": "history.workspace.list", children: [
+      filteredRows.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "p",
+        {
+          className: "workspace-empty",
+          "data-ocid": "history.workspace.empty_state",
+          children: "No past test requests yet. Requests created in the workspace will appear here."
+        }
+      ),
+      groups.map((group) => {
+        const isCollapsed = !!collapsed[group.key];
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: "history-date-group",
+            "data-ocid": `history.workspace.date_group.${group.key}`,
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  className: "history-date-header",
+                  onClick: () => toggle(group.key),
+                  "aria-expanded": !isCollapsed,
+                  "aria-controls": `history-group-panel-${group.key}`,
+                  "data-ocid": `history.workspace.date_group.${group.key}.toggle`,
+                  "aria-label": `${isCollapsed ? "Expand" : "Collapse"} ${group.label} (${group.rows.length} ${group.rows.length === 1 ? "request" : "requests"})`,
+                  children: [
+                    isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      ChevronRight,
+                      {
+                        size: 18,
+                        "aria-hidden": "true",
+                        className: "history-chevron"
+                      }
+                    ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      ChevronDown,
+                      {
+                        size: 18,
+                        "aria-hidden": "true",
+                        className: "history-chevron"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "history-date-label", children: group.label }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "history-date-count", children: group.rows.length })
+                  ]
+                }
+              ),
+              !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  id: `history-group-panel-${group.key}`,
+                  className: "history-date-rows",
+                  children: group.rows.map((row) => {
+                    runningIndex += 1;
+                    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      WorkspaceRow,
+                      {
+                        row,
+                        index: runningIndex - 1,
+                        ocidPrefix: "history.workspace",
+                        mode: "history",
+                        onOpenResults: openResultsInNewTab
+                      },
+                      row.id
+                    );
+                  })
+                }
+              )
+            ]
+          },
+          group.key
+        );
+      })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
+        .history-date-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.6rem;
+        }
+        .history-date-group + .history-date-group {
+          margin-top: 0.4rem;
+        }
+        .history-date-header {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          width: 100%;
+          background: rgba(91, 79, 207, 0.06);
+          border: 1px solid rgba(91, 79, 207, 0.18);
+          border-radius: 0.6rem;
+          padding: 0.55rem 0.8rem;
+          font-family: "Nunito", sans-serif;
+          font-weight: 800;
+          font-size: 0.95rem;
+          color: #1a1a2e;
+          cursor: pointer;
+          text-align: left;
+          transition: background 0.18s ease, box-shadow 0.18s ease;
+          box-sizing: border-box;
+        }
+        .history-date-header:hover {
+          background: rgba(91, 79, 207, 0.12);
+        }
+        .history-date-header:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(91, 79, 207, 0.28);
+        }
+        .history-chevron {
+          color: #5b4fcf;
+          flex-shrink: 0;
+        }
+        .history-date-label {
+          flex: 1;
+          min-width: 0;
+        }
+        .history-date-count {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 1.6rem;
+          height: 1.4rem;
+          padding: 0 0.45rem;
+          background: rgba(91, 79, 207, 0.14);
+          color: #5b4fcf;
+          border-radius: 2rem;
+          font-size: 0.78rem;
+          font-weight: 900;
+          letter-spacing: 0.02em;
+        }
+        .history-date-rows {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          padding-left: 0.25rem;
+        }
+      ` })
+  ] });
+}
 function useActor() {
   return useActor$1(createActor);
 }
 const CHIP_CENTER = 50;
-const CHIP_RADIUS = 42;
+const CHIP_RADIUS = 30;
 function chipPosition(i) {
   const angleDeg = -90 + i * 72;
   const angleRad = angleDeg * Math.PI / 180;
@@ -33987,78 +34743,8 @@ function SparkLogo({ size = 32 }) {
     }
   );
 }
-const STAGE_LABELS$1 = {
-  nlpParser: "NLP Parser",
-  encoder: "Encoder",
-  scriptGenerator: "Script generator"
-};
-const STAGE_ORDER$1 = ["nlpParser", "encoder", "scriptGenerator"];
-const IDLE_STATES = {
-  nlpParser: PipelineState.idle,
-  encoder: PipelineState.idle,
-  scriptGenerator: PipelineState.idle
-};
-const STORAGE_KEY = "tp_workspace_rows";
-function loadPersistedRows() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((r2) => {
-      var _a2, _b2, _c2;
-      return {
-        id: r2.id,
-        testId: r2.testId ?? "",
-        requestType: r2.requestType ?? "",
-        requestDetails: r2.requestDetails ?? "",
-        stages: {
-          nlpParser: ((_a2 = r2.stages) == null ? void 0 : _a2.nlpParser) ?? PipelineState.idle,
-          encoder: ((_b2 = r2.stages) == null ? void 0 : _b2.encoder) ?? PipelineState.idle,
-          scriptGenerator: ((_c2 = r2.stages) == null ? void 0 : _c2.scriptGenerator) ?? PipelineState.idle
-        },
-        running: false,
-        tpLoading: false,
-        tpError: false,
-        pipelineError: false
-      };
-    });
-  } catch {
-    return [];
-  }
-}
-function persistRows(rows) {
-  try {
-    const serializable = rows.map((r2) => ({
-      id: r2.id,
-      testId: r2.testId,
-      requestType: r2.requestType,
-      requestDetails: r2.requestDetails,
-      stages: r2.stages
-    }));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
-  } catch {
-  }
-}
-function stateClass(state) {
-  switch (state) {
-    case PipelineState.processing:
-      return "ws-stage-state ws-stage-processing";
-    case PipelineState.completed:
-      return "ws-stage-state ws-stage-completed";
-    default:
-      return "ws-stage-state ws-stage-idle";
-  }
-}
-function stateLabel$1(state) {
-  switch (state) {
-    case PipelineState.processing:
-      return "Processing";
-    case PipelineState.completed:
-      return "completed";
-    default:
-      return "idle";
-  }
+function persistRowsLocal(rows) {
+  persistRows(rows);
 }
 function LandingPage() {
   const { actor } = useActor();
@@ -34071,7 +34757,7 @@ function LandingPage() {
   }, []);
   reactExports.useEffect(() => {
     if (!hydratedRef.current) return;
-    persistRows(rows);
+    persistRowsLocal(rows);
   }, [rows]);
   reactExports.useEffect(() => {
     let cancelled = false;
@@ -34106,7 +34792,8 @@ function LandingPage() {
         running: false,
         tpLoading: false,
         tpError: false,
-        pipelineError: false
+        pipelineError: false,
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
       }
     ]);
   }, []);
@@ -34140,37 +34827,33 @@ function LandingPage() {
         (r2) => r2.id === rowId ? { ...r2, tpLoading: true, tpError: false } : r2
       )
     );
-    try {
-      const res = await fetch(
-        `http://107.111.159.37:8000/api/tp/data/${encodeURIComponent(trimmed)}`
-      );
-      if (!res.ok) throw new Error(`TP API responded ${res.status}`);
-      const data = await res.json();
-      const obj = data ?? {};
-      const testType = typeof obj.testType === "string" ? obj.testType : "";
-      const testDetail = typeof obj.testDetail === "string" ? obj.testDetail : "";
-      setRows(
-        (prev) => prev.map(
-          (r2) => r2.id === rowId ? {
-            ...r2,
-            tpLoading: false,
-            tpError: false,
-            requestType: testType || r2.requestType,
-            requestDetails: testDetail || r2.requestDetails
-          } : r2
-        )
-      );
-    } catch {
-      setRows(
-        (prev) => prev.map(
-          (r2) => r2.id === rowId ? { ...r2, tpLoading: false, tpError: true } : r2
-        )
-      );
-    }
-  }, []);
-  const openResults = reactExports.useCallback((rowId) => {
-    const url = `${window.location.origin}/?result=${rowId}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    const encoded = encodeURIComponent(trimmed);
+    const results = await Promise.allSettled([
+      fetch(`http://107.111.159.37:8000/api/tp/data/${encoded}/testType`),
+      fetch(`http://107.111.159.37:8000/api/tp/data/${encoded}/description`)
+    ]);
+    const [testTypeResult, testDetailResult] = results;
+    const readText = async (result) => {
+      if (result.status !== "fulfilled") return "";
+      const res = result.value;
+      if (!res.ok) return "";
+      const text = (await res.text()).trim();
+      return text;
+    };
+    const testType = await readText(testTypeResult);
+    const testDetail = await readText(testDetailResult);
+    const bothSucceeded = testTypeResult.status === "fulfilled" && testTypeResult.value.ok && testDetailResult.status === "fulfilled" && testDetailResult.value.ok;
+    setRows(
+      (prev) => prev.map(
+        (r2) => r2.id === rowId ? {
+          ...r2,
+          tpLoading: false,
+          tpError: !bothSucceeded,
+          requestType: testType || r2.requestType,
+          requestDetails: testDetail || r2.requestDetails
+        } : r2
+      )
+    );
   }, []);
   const runPipeline = reactExports.useCallback(
     async (rowId) => {
@@ -34188,16 +34871,19 @@ function LandingPage() {
       );
       const applyStatus = (status) => {
         setRows(
-          (prev) => prev.map(
-            (r2) => r2.id === rowId ? {
+          (prev) => prev.map((r2) => {
+            if (r2.id !== rowId) return r2;
+            const allDone = status.nlpParser === PipelineState.completed && status.encoder === PipelineState.completed && status.scriptGenerator === PipelineState.completed;
+            return {
               ...r2,
               stages: {
                 nlpParser: status.nlpParser,
                 encoder: status.encoder,
                 scriptGenerator: status.scriptGenerator
-              }
-            } : r2
-          )
+              },
+              completedAt: allDone && !r2.completedAt ? (/* @__PURE__ */ new Date()).toISOString() : r2.completedAt
+            };
+          })
         );
       };
       const allCompleted = (status) => status.nlpParser === PipelineState.completed && status.encoder === PipelineState.completed && status.scriptGenerator === PipelineState.completed;
@@ -34238,26 +34924,29 @@ function LandingPage() {
     [actor]
   );
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "landing-root", "data-ocid": "landing.page", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hero-mascot-area", "aria-hidden": "true", children: [
-      FLOAT_CHIPS.map((chip) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "span",
-        {
-          className: "float-chip animate-float",
-          style: {
-            background: chip.color,
-            top: chip.top,
-            left: chip.left,
-            width: chip.size,
-            height: chip.size,
-            animationDelay: chip.delay,
-            animationDuration: chip.dur
+    reactDomExports.createPortal(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hero-mascot-area", "aria-hidden": "true", children: [
+        FLOAT_CHIPS.map((chip) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            className: "float-chip animate-float",
+            style: {
+              background: chip.color,
+              top: chip.top,
+              left: chip.left,
+              width: chip.size,
+              height: chip.size,
+              animationDelay: chip.delay,
+              animationDuration: chip.dur
+            },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChipIconSvg, { icon: chip.icon, size: chip.size })
           },
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChipIconSvg, { icon: chip.icon, size: chip.size })
-        },
-        chip.icon
-      )),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hero-mascot-wrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RobotMascot, { size: 180, mood: "happy" }) })
-    ] }),
+          chip.icon
+        )),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hero-mascot-wrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RobotMascot, { size: 180, mood: "happy" }) })
+      ] }),
+      document.body
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "section",
       {
@@ -34302,20 +34991,34 @@ function LandingPage() {
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "button",
-                  {
-                    type: "button",
-                    className: "add-request-control",
-                    onClick: addRow,
-                    "data-ocid": "landing.workspace.add_request_button",
-                    "aria-label": "Add test request",
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 18, strokeWidth: 3, className: "add-request-icon" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Add test request" })
-                    ]
-                  }
-                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-controls", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "button",
+                    {
+                      type: "button",
+                      className: "add-request-control",
+                      onClick: addRow,
+                      "data-ocid": "landing.workspace.add_request_button",
+                      "aria-label": "Add test request",
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 18, strokeWidth: 3, className: "add-request-icon" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Add test request" })
+                      ]
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      type: "button",
+                      className: "history-control",
+                      onClick: openHistoryInNewTab,
+                      "data-ocid": "landing.workspace.history_button",
+                      "aria-label": "Open history in a new tab",
+                      title: "Open history in a new tab",
+                      children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "History" })
+                    }
+                  )
+                ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-rows", "data-ocid": "landing.workspace.list", children: [
                   rows.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "p",
@@ -34325,190 +35028,23 @@ function LandingPage() {
                       children: "No test requests yet. Click the + control above to add one."
                     }
                   ),
-                  rows.map((row, idx) => {
-                    const encoderCompleted = row.stages.encoder === PipelineState.completed;
-                    const resultsDisabled = !encoderCompleted;
-                    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      "div",
-                      {
-                        className: "workspace-row",
-                        "data-ocid": `landing.workspace.item.${idx + 1}`,
-                        children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "button",
-                            {
-                              type: "button",
-                              className: "workspace-row-close",
-                              onClick: () => removeRow(row.id),
-                              "data-ocid": `landing.workspace.delete_button.${idx + 1}`,
-                              "aria-label": `Remove test request row ${row.id}`,
-                              title: `Remove row ${row.id}`,
-                              children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 12, strokeWidth: 3, "aria-hidden": "true" })
-                            }
-                          ),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-row-top", children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-serial", children: row.id }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              "input",
-                              {
-                                type: "text",
-                                className: "workspace-test-id-input",
-                                placeholder: "Test ID",
-                                value: row.testId,
-                                onChange: (e) => updateTestId(row.id, e.target.value),
-                                onBlur: (e) => handleTestIdBlur(row.id, e.target.value),
-                                "data-ocid": `landing.workspace.input.${idx + 1}`,
-                                "aria-label": `Test ID for row ${row.id}`
-                              }
-                            ),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              "input",
-                              {
-                                type: "text",
-                                className: "workspace-field-input workspace-field-type-input",
-                                placeholder: "Request Type",
-                                value: row.requestType,
-                                onChange: (e) => updateRequestType(row.id, e.target.value),
-                                "data-ocid": `landing.workspace.request_type_input.${idx + 1}`,
-                                "aria-label": `Request Type for row ${row.id}`
-                              }
-                            ),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              "input",
-                              {
-                                type: "text",
-                                className: "workspace-field-input workspace-field-details-input",
-                                placeholder: "Request Details",
-                                value: row.requestDetails,
-                                onChange: (e) => updateRequestDetails(row.id, e.target.value),
-                                "data-ocid": `landing.workspace.request_details_input.${idx + 1}`,
-                                "aria-label": `Request Details for row ${row.id}`
-                              }
-                            ),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              "button",
-                              {
-                                type: "button",
-                                className: "workspace-start-btn",
-                                onClick: () => runPipeline(row.id),
-                                disabled: row.running,
-                                "data-ocid": `landing.workspace.start_button.${idx + 1}`,
-                                "aria-label": row.pipelineError && !row.running ? `Retry pipeline for row ${row.id}` : `Start pipeline for row ${row.id}`,
-                                title: row.pipelineError && !row.running ? "Pipeline failed — click to retry" : void 0,
-                                children: row.running ? "Running…" : row.pipelineError ? "Retry" : "Start"
-                              }
-                            )
-                          ] }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                            "div",
-                            {
-                              className: "workspace-pipeline",
-                              "data-ocid": `landing.workspace.pipeline.${idx + 1}`,
-                              children: [
-                                STAGE_ORDER$1.map((stage, sIdx) => /* @__PURE__ */ jsxRuntimeExports.jsxs(o.Fragment, { children: [
-                                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                    "span",
-                                    {
-                                      className: stateClass(row.stages[stage]),
-                                      "data-ocid": `landing.workspace.stage.${idx + 1}.${stage}`,
-                                      children: [
-                                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ws-stage-dot", "aria-hidden": "true" }),
-                                        STAGE_LABELS$1[stage],
-                                        " ·",
-                                        " ",
-                                        stateLabel$1(row.stages[stage])
-                                      ]
-                                    }
-                                  ),
-                                  sIdx < STAGE_ORDER$1.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                                    ChevronRight,
-                                    {
-                                      size: 16,
-                                      className: "ws-stage-sep",
-                                      "aria-hidden": "true"
-                                    }
-                                  )
-                                ] }, stage)),
-                                row.tpLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                  "output",
-                                  {
-                                    className: "workspace-tp-status workspace-tp-loading",
-                                    "data-ocid": `landing.workspace.tp_loading_state.${idx + 1}`,
-                                    "aria-live": "polite",
-                                    children: [
-                                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                                        "span",
-                                        {
-                                          className: "workspace-tp-spinner",
-                                          "aria-hidden": "true"
-                                        }
-                                      ),
-                                      "Fetching TP…"
-                                    ]
-                                  }
-                                ),
-                                row.tpError && !row.tpLoading && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                  "output",
-                                  {
-                                    className: "workspace-tp-status workspace-tp-error",
-                                    "data-ocid": `landing.workspace.tp_error_state.${idx + 1}`,
-                                    "aria-live": "polite",
-                                    children: [
-                                      /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 12, "aria-hidden": "true" }),
-                                      "TP fetch failed"
-                                    ]
-                                  }
-                                ),
-                                row.pipelineError && !row.running && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                  "output",
-                                  {
-                                    className: "workspace-tp-status workspace-tp-error",
-                                    "data-ocid": `landing.workspace.pipeline_error_state.${idx + 1}`,
-                                    role: "alert",
-                                    "aria-live": "assertive",
-                                    children: [
-                                      /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 12, "aria-hidden": "true" }),
-                                      "Pipeline failed — retry"
-                                    ]
-                                  }
-                                ),
-                                encoderCompleted && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                  "span",
-                                  {
-                                    className: "ws-stage-state ws-stage-completed workspace-encoder-done",
-                                    "data-ocid": `landing.workspace.encoder_completed_state.${idx + 1}`,
-                                    "aria-label": `Encoder completed for row ${row.id}; Results button enabled`,
-                                    children: [
-                                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ws-stage-dot", "aria-hidden": "true" }),
-                                      "Encoder completed"
-                                    ]
-                                  }
-                                ),
-                                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                  "button",
-                                  {
-                                    type: "button",
-                                    className: "workspace-results-btn",
-                                    onClick: () => openResults(row.id),
-                                    disabled: resultsDisabled,
-                                    "aria-disabled": resultsDisabled,
-                                    title: resultsDisabled ? "Results available once Encoder completes" : "Open results in a new tab",
-                                    "data-ocid": `landing.workspace.results_button.${idx + 1}`,
-                                    "aria-label": `Open results for row ${row.id}`,
-                                    children: [
-                                      /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 14, "aria-hidden": "true" }),
-                                      "Results"
-                                    ]
-                                  }
-                                )
-                              ]
-                            }
-                          )
-                        ]
-                      },
-                      row.id
-                    );
-                  })
+                  rows.map((row, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    WorkspaceRow,
+                    {
+                      row,
+                      index: idx,
+                      ocidPrefix: "landing.workspace",
+                      mode: "edit",
+                      onRemove: removeRow,
+                      onTestIdChange: updateTestId,
+                      onTestIdBlur: handleTestIdBlur,
+                      onRequestTypeChange: updateRequestType,
+                      onRequestDetailsChange: updateRequestDetails,
+                      onStart: runPipeline,
+                      onOpenResults: openResultsInNewTab
+                    },
+                    row.id
+                  ))
                 ] })
               ]
             }
@@ -34555,10 +35091,10 @@ var jt = (n) => {
     default:
       return null;
   }
-}, te = Array(12).fill(0), Yt = ({ visible: n, className: e }) => o.createElement("div", { className: ["sonner-loading-wrapper", e].filter(Boolean).join(" "), "data-visible": n }, o.createElement("div", { className: "sonner-spinner" }, te.map((t, a2) => o.createElement("div", { className: "sonner-loading-bar", key: `spinner-bar-${a2}` })))), ee = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z", clipRule: "evenodd" })), oe = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z", clipRule: "evenodd" })), ae = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z", clipRule: "evenodd" })), se = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z", clipRule: "evenodd" })), Ot = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }, o.createElement("line", { x1: "18", y1: "6", x2: "6", y2: "18" }), o.createElement("line", { x1: "6", y1: "6", x2: "18", y2: "18" }));
+}, te = Array(12).fill(0), Yt = ({ visible: n, className: e }) => React$2.createElement("div", { className: ["sonner-loading-wrapper", e].filter(Boolean).join(" "), "data-visible": n }, React$2.createElement("div", { className: "sonner-spinner" }, te.map((t, a2) => React$2.createElement("div", { className: "sonner-loading-bar", key: `spinner-bar-${a2}` })))), ee = React$2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React$2.createElement("path", { fillRule: "evenodd", d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z", clipRule: "evenodd" })), oe = React$2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", height: "20", width: "20" }, React$2.createElement("path", { fillRule: "evenodd", d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z", clipRule: "evenodd" })), ae = React$2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React$2.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z", clipRule: "evenodd" })), se = React$2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React$2.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z", clipRule: "evenodd" })), Ot = React$2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }, React$2.createElement("line", { x1: "18", y1: "6", x2: "6", y2: "18" }), React$2.createElement("line", { x1: "6", y1: "6", x2: "18", y2: "18" }));
 var Ft = () => {
-  let [n, e] = o.useState(document.hidden);
-  return o.useEffect(() => {
+  let [n, e] = React$2.useState(document.hidden);
+  return React$2.useEffect(() => {
     let t = () => {
       e(document.hidden);
     };
@@ -34596,7 +35132,7 @@ var bt = 1, yt = class {
       let a2;
       t.loading !== void 0 && (a2 = this.create({ ...t, promise: e, type: "loading", message: t.loading, description: typeof t.description != "function" ? t.description : void 0 }));
       let u2 = e instanceof Promise ? e : e(), f2 = a2 !== void 0, w2, S2 = u2.then(async (i) => {
-        if (w2 = ["resolve", i], o.isValidElement(i)) f2 = false, this.create({ id: a2, type: "default", message: i });
+        if (w2 = ["resolve", i], React$2.isValidElement(i)) f2 = false, this.create({ id: a2, type: "default", message: i });
         else if (ie(i) && !i.ok) {
           f2 = false;
           let T2 = typeof t.error == "function" ? await t.error(`HTTP error! status: ${i.status}`) : t.error, F2 = typeof t.description == "function" ? await t.description(`HTTP error! status: ${i.status}`) : t.description;
@@ -34649,33 +35185,33 @@ function xe(n) {
 }
 var ve = (n) => {
   var Dt, Pt, Nt, Bt, Ct, kt, It, Mt, Ht, At, Lt;
-  let { invert: e, toast: t, unstyled: a2, interacting: u2, setHeights: f2, visibleToasts: w2, heights: S2, index: g2, toasts: i, expanded: D, removeToast: T2, defaultRichColors: F2, closeButton: et2, style: ut2, cancelButtonStyle: ft2, actionButtonStyle: l2, className: ot2 = "", descriptionClassName: at = "", duration: X2, position: st2, gap: pt, loadingIcon: rt2, expandByDefault: B2, classNames: s, icons: P2, closeButtonAriaLabel: nt2 = "Close toast", pauseWhenPageIsHidden: it2 } = n, [Y2, C2] = o.useState(null), [lt, J2] = o.useState(null), [W2, H2] = o.useState(false), [A, mt] = o.useState(false), [L2, z2] = o.useState(false), [ct2, d2] = o.useState(false), [h2, y2] = o.useState(false), [R2, j2] = o.useState(0), [p2, _2] = o.useState(0), O2 = o.useRef(t.duration || X2 || Wt), G2 = o.useRef(null), k2 = o.useRef(null), Vt = g2 === 0, Ut = g2 + 1 <= w2, N2 = t.type, V2 = t.dismissible !== false, Kt = t.className || "", Xt = t.descriptionClassName || "", dt = o.useMemo(() => S2.findIndex((r2) => r2.toastId === t.id) || 0, [S2, t.id]), Jt = o.useMemo(() => {
+  let { invert: e, toast: t, unstyled: a2, interacting: u2, setHeights: f2, visibleToasts: w2, heights: S2, index: g2, toasts: i, expanded: D, removeToast: T2, defaultRichColors: F2, closeButton: et2, style: ut2, cancelButtonStyle: ft2, actionButtonStyle: l2, className: ot2 = "", descriptionClassName: at = "", duration: X2, position: st2, gap: pt, loadingIcon: rt2, expandByDefault: B2, classNames: s, icons: P2, closeButtonAriaLabel: nt2 = "Close toast", pauseWhenPageIsHidden: it2 } = n, [Y2, C2] = React$2.useState(null), [lt, J2] = React$2.useState(null), [W2, H2] = React$2.useState(false), [A, mt] = React$2.useState(false), [L2, z2] = React$2.useState(false), [ct2, d2] = React$2.useState(false), [h2, y2] = React$2.useState(false), [R2, j2] = React$2.useState(0), [p2, _2] = React$2.useState(0), O2 = React$2.useRef(t.duration || X2 || Wt), G2 = React$2.useRef(null), k2 = React$2.useRef(null), Vt = g2 === 0, Ut = g2 + 1 <= w2, N2 = t.type, V2 = t.dismissible !== false, Kt = t.className || "", Xt = t.descriptionClassName || "", dt = React$2.useMemo(() => S2.findIndex((r2) => r2.toastId === t.id) || 0, [S2, t.id]), Jt = React$2.useMemo(() => {
     var r2;
     return (r2 = t.closeButton) != null ? r2 : et2;
-  }, [t.closeButton, et2]), Tt = o.useMemo(() => t.duration || X2 || Wt, [t.duration, X2]), gt2 = o.useRef(0), U2 = o.useRef(0), St = o.useRef(0), K2 = o.useRef(null), [Gt, Qt] = st2.split("-"), Rt = o.useMemo(() => S2.reduce((r2, m2, c2) => c2 >= dt ? r2 : r2 + m2.height, 0), [S2, dt]), Et = Ft(), qt = t.invert || e, ht = N2 === "loading";
-  U2.current = o.useMemo(() => dt * pt + Rt, [dt, Rt]), o.useEffect(() => {
+  }, [t.closeButton, et2]), Tt = React$2.useMemo(() => t.duration || X2 || Wt, [t.duration, X2]), gt2 = React$2.useRef(0), U2 = React$2.useRef(0), St = React$2.useRef(0), K2 = React$2.useRef(null), [Gt, Qt] = st2.split("-"), Rt = React$2.useMemo(() => S2.reduce((r2, m2, c2) => c2 >= dt ? r2 : r2 + m2.height, 0), [S2, dt]), Et = Ft(), qt = t.invert || e, ht = N2 === "loading";
+  U2.current = React$2.useMemo(() => dt * pt + Rt, [dt, Rt]), React$2.useEffect(() => {
     O2.current = Tt;
-  }, [Tt]), o.useEffect(() => {
+  }, [Tt]), React$2.useEffect(() => {
     H2(true);
-  }, []), o.useEffect(() => {
+  }, []), React$2.useEffect(() => {
     let r2 = k2.current;
     if (r2) {
       let m2 = r2.getBoundingClientRect().height;
       return _2(m2), f2((c2) => [{ toastId: t.id, height: m2, position: t.position }, ...c2]), () => f2((c2) => c2.filter((b2) => b2.toastId !== t.id));
     }
-  }, [f2, t.id]), o.useLayoutEffect(() => {
+  }, [f2, t.id]), React$2.useLayoutEffect(() => {
     if (!W2) return;
     let r2 = k2.current, m2 = r2.style.height;
     r2.style.height = "auto";
     let c2 = r2.getBoundingClientRect().height;
     r2.style.height = m2, _2(c2), f2((b2) => b2.find((x3) => x3.toastId === t.id) ? b2.map((x3) => x3.toastId === t.id ? { ...x3, height: c2 } : x3) : [{ toastId: t.id, height: c2, position: t.position }, ...b2]);
   }, [W2, t.title, t.description, f2, t.id]);
-  let $2 = o.useCallback(() => {
+  let $2 = React$2.useCallback(() => {
     mt(true), j2(U2.current), f2((r2) => r2.filter((m2) => m2.toastId !== t.id)), setTimeout(() => {
       T2(t);
     }, we);
   }, [t, T2, f2, U2]);
-  o.useEffect(() => {
+  React$2.useEffect(() => {
     if (t.promise && N2 === "loading" || t.duration === 1 / 0 || t.type === "loading") return;
     let r2;
     return D || u2 || it2 && Et ? (() => {
@@ -34690,14 +35226,14 @@ var ve = (n) => {
         (b2 = t.onAutoClose) == null || b2.call(t, t), $2();
       }, O2.current));
     })(), () => clearTimeout(r2);
-  }, [D, u2, t, N2, it2, Et, $2]), o.useEffect(() => {
+  }, [D, u2, t, N2, it2, Et, $2]), React$2.useEffect(() => {
     t.delete && $2();
   }, [$2, t.delete]);
   function Zt() {
     var r2, m2, c2;
-    return P2 != null && P2.loading ? o.createElement("div", { className: M$1(s == null ? void 0 : s.loader, (r2 = t == null ? void 0 : t.classNames) == null ? void 0 : r2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, P2.loading) : rt2 ? o.createElement("div", { className: M$1(s == null ? void 0 : s.loader, (m2 = t == null ? void 0 : t.classNames) == null ? void 0 : m2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, rt2) : o.createElement(Yt, { className: M$1(s == null ? void 0 : s.loader, (c2 = t == null ? void 0 : t.classNames) == null ? void 0 : c2.loader), visible: N2 === "loading" });
+    return P2 != null && P2.loading ? React$2.createElement("div", { className: M$1(s == null ? void 0 : s.loader, (r2 = t == null ? void 0 : t.classNames) == null ? void 0 : r2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, P2.loading) : rt2 ? React$2.createElement("div", { className: M$1(s == null ? void 0 : s.loader, (m2 = t == null ? void 0 : t.classNames) == null ? void 0 : m2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, rt2) : React$2.createElement(Yt, { className: M$1(s == null ? void 0 : s.loader, (c2 = t == null ? void 0 : t.classNames) == null ? void 0 : c2.loader), visible: N2 === "loading" });
   }
-  return o.createElement("li", { tabIndex: 0, ref: k2, className: M$1(ot2, Kt, s == null ? void 0 : s.toast, (Dt = t == null ? void 0 : t.classNames) == null ? void 0 : Dt.toast, s == null ? void 0 : s.default, s == null ? void 0 : s[N2], (Pt = t == null ? void 0 : t.classNames) == null ? void 0 : Pt[N2]), "data-sonner-toast": "", "data-rich-colors": (Nt = t.richColors) != null ? Nt : F2, "data-styled": !(t.jsx || t.unstyled || a2), "data-mounted": W2, "data-promise": !!t.promise, "data-swiped": h2, "data-removed": A, "data-visible": Ut, "data-y-position": Gt, "data-x-position": Qt, "data-index": g2, "data-front": Vt, "data-swiping": L2, "data-dismissible": V2, "data-type": N2, "data-invert": qt, "data-swipe-out": ct2, "data-swipe-direction": lt, "data-expanded": !!(D || B2 && W2), style: { "--index": g2, "--toasts-before": g2, "--z-index": i.length - g2, "--offset": `${A ? R2 : U2.current}px`, "--initial-height": B2 ? "auto" : `${p2}px`, ...ut2, ...t.style }, onDragEnd: () => {
+  return React$2.createElement("li", { tabIndex: 0, ref: k2, className: M$1(ot2, Kt, s == null ? void 0 : s.toast, (Dt = t == null ? void 0 : t.classNames) == null ? void 0 : Dt.toast, s == null ? void 0 : s.default, s == null ? void 0 : s[N2], (Pt = t == null ? void 0 : t.classNames) == null ? void 0 : Pt[N2]), "data-sonner-toast": "", "data-rich-colors": (Nt = t.richColors) != null ? Nt : F2, "data-styled": !(t.jsx || t.unstyled || a2), "data-mounted": W2, "data-promise": !!t.promise, "data-swiped": h2, "data-removed": A, "data-visible": Ut, "data-y-position": Gt, "data-x-position": Qt, "data-index": g2, "data-front": Vt, "data-swiping": L2, "data-dismissible": V2, "data-type": N2, "data-invert": qt, "data-swipe-out": ct2, "data-swipe-direction": lt, "data-expanded": !!(D || B2 && W2), style: { "--index": g2, "--toasts-before": g2, "--z-index": i.length - g2, "--offset": `${A ? R2 : U2.current}px`, "--initial-height": B2 ? "auto" : `${p2}px`, ...ut2, ...t.style }, onDragEnd: () => {
     z2(false), C2(null), K2.current = null;
   }, onPointerDown: (r2) => {
     ht || !V2 || (G2.current = /* @__PURE__ */ new Date(), j2(U2.current), r2.target.setPointerCapture(r2.pointerId), r2.target.tagName !== "BUTTON" && (z2(true), K2.current = { x: r2.clientX, y: r2.clientY }));
@@ -34718,14 +35254,14 @@ var ve = (n) => {
     !Y2 && (Math.abs(b2) > 1 || Math.abs(c2) > 1) && C2(Math.abs(b2) > Math.abs(c2) ? "x" : "y");
     let x3 = { x: 0, y: 0 };
     Y2 === "y" ? (I.includes("top") || I.includes("bottom")) && (I.includes("top") && c2 < 0 || I.includes("bottom") && c2 > 0) && (x3.y = c2) : Y2 === "x" && (I.includes("left") || I.includes("right")) && (I.includes("left") && b2 < 0 || I.includes("right") && b2 > 0) && (x3.x = b2), (Math.abs(x3.x) > 0 || Math.abs(x3.y) > 0) && y2(true), (Z2 = k2.current) == null || Z2.style.setProperty("--swipe-amount-x", `${x3.x}px`), (zt = k2.current) == null || zt.style.setProperty("--swipe-amount-y", `${x3.y}px`);
-  } }, Jt && !t.jsx ? o.createElement("button", { "aria-label": nt2, "data-disabled": ht, "data-close-button": true, onClick: ht || !V2 ? () => {
+  } }, Jt && !t.jsx ? React$2.createElement("button", { "aria-label": nt2, "data-disabled": ht, "data-close-button": true, onClick: ht || !V2 ? () => {
   } : () => {
     var r2;
     $2(), (r2 = t.onDismiss) == null || r2.call(t, t);
-  }, className: M$1(s == null ? void 0 : s.closeButton, (Bt = t == null ? void 0 : t.classNames) == null ? void 0 : Bt.closeButton) }, (Ct = P2 == null ? void 0 : P2.close) != null ? Ct : Ot) : null, t.jsx || reactExports.isValidElement(t.title) ? t.jsx ? t.jsx : typeof t.title == "function" ? t.title() : t.title : o.createElement(o.Fragment, null, N2 || t.icon || t.promise ? o.createElement("div", { "data-icon": "", className: M$1(s == null ? void 0 : s.icon, (kt = t == null ? void 0 : t.classNames) == null ? void 0 : kt.icon) }, t.promise || t.type === "loading" && !t.icon ? t.icon || Zt() : null, t.type !== "loading" ? t.icon || (P2 == null ? void 0 : P2[N2]) || jt(N2) : null) : null, o.createElement("div", { "data-content": "", className: M$1(s == null ? void 0 : s.content, (It = t == null ? void 0 : t.classNames) == null ? void 0 : It.content) }, o.createElement("div", { "data-title": "", className: M$1(s == null ? void 0 : s.title, (Mt = t == null ? void 0 : t.classNames) == null ? void 0 : Mt.title) }, typeof t.title == "function" ? t.title() : t.title), t.description ? o.createElement("div", { "data-description": "", className: M$1(at, Xt, s == null ? void 0 : s.description, (Ht = t == null ? void 0 : t.classNames) == null ? void 0 : Ht.description) }, typeof t.description == "function" ? t.description() : t.description) : null), reactExports.isValidElement(t.cancel) ? t.cancel : t.cancel && tt(t.cancel) ? o.createElement("button", { "data-button": true, "data-cancel": true, style: t.cancelButtonStyle || ft2, onClick: (r2) => {
+  }, className: M$1(s == null ? void 0 : s.closeButton, (Bt = t == null ? void 0 : t.classNames) == null ? void 0 : Bt.closeButton) }, (Ct = P2 == null ? void 0 : P2.close) != null ? Ct : Ot) : null, t.jsx || reactExports.isValidElement(t.title) ? t.jsx ? t.jsx : typeof t.title == "function" ? t.title() : t.title : React$2.createElement(React$2.Fragment, null, N2 || t.icon || t.promise ? React$2.createElement("div", { "data-icon": "", className: M$1(s == null ? void 0 : s.icon, (kt = t == null ? void 0 : t.classNames) == null ? void 0 : kt.icon) }, t.promise || t.type === "loading" && !t.icon ? t.icon || Zt() : null, t.type !== "loading" ? t.icon || (P2 == null ? void 0 : P2[N2]) || jt(N2) : null) : null, React$2.createElement("div", { "data-content": "", className: M$1(s == null ? void 0 : s.content, (It = t == null ? void 0 : t.classNames) == null ? void 0 : It.content) }, React$2.createElement("div", { "data-title": "", className: M$1(s == null ? void 0 : s.title, (Mt = t == null ? void 0 : t.classNames) == null ? void 0 : Mt.title) }, typeof t.title == "function" ? t.title() : t.title), t.description ? React$2.createElement("div", { "data-description": "", className: M$1(at, Xt, s == null ? void 0 : s.description, (Ht = t == null ? void 0 : t.classNames) == null ? void 0 : Ht.description) }, typeof t.description == "function" ? t.description() : t.description) : null), reactExports.isValidElement(t.cancel) ? t.cancel : t.cancel && tt(t.cancel) ? React$2.createElement("button", { "data-button": true, "data-cancel": true, style: t.cancelButtonStyle || ft2, onClick: (r2) => {
     var m2, c2;
     tt(t.cancel) && V2 && ((c2 = (m2 = t.cancel).onClick) == null || c2.call(m2, r2), $2());
-  }, className: M$1(s == null ? void 0 : s.cancelButton, (At = t == null ? void 0 : t.classNames) == null ? void 0 : At.cancelButton) }, t.cancel.label) : null, reactExports.isValidElement(t.action) ? t.action : t.action && tt(t.action) ? o.createElement("button", { "data-button": true, "data-action": true, style: t.actionButtonStyle || l2, onClick: (r2) => {
+  }, className: M$1(s == null ? void 0 : s.cancelButton, (At = t == null ? void 0 : t.classNames) == null ? void 0 : At.cancelButton) }, t.cancel.label) : null, reactExports.isValidElement(t.action) ? t.action : t.action && tt(t.action) ? React$2.createElement("button", { "data-button": true, "data-action": true, style: t.actionButtonStyle || l2, onClick: (r2) => {
     var m2, c2;
     tt(t.action) && ((c2 = (m2 = t.action).onClick) == null || c2.call(m2, r2), !r2.defaultPrevented && $2());
   }, className: M$1(s == null ? void 0 : s.actionButton, (Lt = t == null ? void 0 : t.classNames) == null ? void 0 : Lt.actionButton) }, t.action.label) : null));
@@ -34750,13 +35286,13 @@ function Te(n, e) {
   }), t;
 }
 var $e = reactExports.forwardRef(function(e, t) {
-  let { invert: a2, position: u2 = "bottom-right", hotkey: f2 = ["altKey", "KeyT"], expand: w2, closeButton: S2, className: g2, offset: i, mobileOffset: D, theme: T2 = "light", richColors: F2, duration: et2, style: ut2, visibleToasts: ft2 = pe, toastOptions: l2, dir: ot2 = _t(), gap: at = be, loadingIcon: X2, icons: st2, containerAriaLabel: pt = "Notifications", pauseWhenPageIsHidden: rt2 } = e, [B2, s] = o.useState([]), P2 = o.useMemo(() => Array.from(new Set([u2].concat(B2.filter((d2) => d2.position).map((d2) => d2.position)))), [B2, u2]), [nt2, it2] = o.useState([]), [Y2, C2] = o.useState(false), [lt, J2] = o.useState(false), [W2, H2] = o.useState(T2 !== "system" ? T2 : typeof window != "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), A = o.useRef(null), mt = f2.join("+").replace(/Key/g, "").replace(/Digit/g, ""), L2 = o.useRef(null), z2 = o.useRef(false), ct2 = o.useCallback((d2) => {
+  let { invert: a2, position: u2 = "bottom-right", hotkey: f2 = ["altKey", "KeyT"], expand: w2, closeButton: S2, className: g2, offset: i, mobileOffset: D, theme: T2 = "light", richColors: F2, duration: et2, style: ut2, visibleToasts: ft2 = pe, toastOptions: l2, dir: ot2 = _t(), gap: at = be, loadingIcon: X2, icons: st2, containerAriaLabel: pt = "Notifications", pauseWhenPageIsHidden: rt2 } = e, [B2, s] = React$2.useState([]), P2 = React$2.useMemo(() => Array.from(new Set([u2].concat(B2.filter((d2) => d2.position).map((d2) => d2.position)))), [B2, u2]), [nt2, it2] = React$2.useState([]), [Y2, C2] = React$2.useState(false), [lt, J2] = React$2.useState(false), [W2, H2] = React$2.useState(T2 !== "system" ? T2 : typeof window != "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), A = React$2.useRef(null), mt = f2.join("+").replace(/Key/g, "").replace(/Digit/g, ""), L2 = React$2.useRef(null), z2 = React$2.useRef(false), ct2 = React$2.useCallback((d2) => {
     s((h2) => {
       var y2;
       return (y2 = h2.find((R2) => R2.id === d2.id)) != null && y2.delete || v.dismiss(d2.id), h2.filter(({ id: R2 }) => R2 !== d2.id);
     });
   }, []);
-  return o.useEffect(() => v.subscribe((d2) => {
+  return React$2.useEffect(() => v.subscribe((d2) => {
     if (d2.dismiss) {
       s((h2) => h2.map((y2) => y2.id === d2.id ? { ...y2, delete: true } : y2));
       return;
@@ -34769,7 +35305,7 @@ var $e = reactExports.forwardRef(function(e, t) {
         });
       });
     });
-  }), []), o.useEffect(() => {
+  }), []), React$2.useEffect(() => {
     if (T2 !== "system") {
       H2(T2);
       return;
@@ -34789,22 +35325,22 @@ var $e = reactExports.forwardRef(function(e, t) {
         }
       });
     }
-  }, [T2]), o.useEffect(() => {
+  }, [T2]), React$2.useEffect(() => {
     B2.length <= 1 && C2(false);
-  }, [B2]), o.useEffect(() => {
+  }, [B2]), React$2.useEffect(() => {
     let d2 = (h2) => {
       var R2, j2;
       f2.every((p2) => h2[p2] || h2.code === p2) && (C2(true), (R2 = A.current) == null || R2.focus()), h2.code === "Escape" && (document.activeElement === A.current || (j2 = A.current) != null && j2.contains(document.activeElement)) && C2(false);
     };
     return document.addEventListener("keydown", d2), () => document.removeEventListener("keydown", d2);
-  }, [f2]), o.useEffect(() => {
+  }, [f2]), React$2.useEffect(() => {
     if (A.current) return () => {
       L2.current && (L2.current.focus({ preventScroll: true }), L2.current = null, z2.current = false);
     };
-  }, [A.current]), o.createElement("section", { ref: t, "aria-label": `${pt} ${mt}`, tabIndex: -1, "aria-live": "polite", "aria-relevant": "additions text", "aria-atomic": "false", suppressHydrationWarning: true }, P2.map((d2, h2) => {
+  }, [A.current]), React$2.createElement("section", { ref: t, "aria-label": `${pt} ${mt}`, tabIndex: -1, "aria-live": "polite", "aria-relevant": "additions text", "aria-atomic": "false", suppressHydrationWarning: true }, P2.map((d2, h2) => {
     var j2;
     let [y2, R2] = d2.split("-");
-    return B2.length ? o.createElement("ol", { key: d2, dir: ot2 === "auto" ? _t() : ot2, tabIndex: -1, ref: A, className: g2, "data-sonner-toaster": true, "data-theme": W2, "data-y-position": y2, "data-lifted": Y2 && B2.length > 1 && !w2, "data-x-position": R2, style: { "--front-toast-height": `${((j2 = nt2[0]) == null ? void 0 : j2.height) || 0}px`, "--width": `${he}px`, "--gap": `${at}px`, ...ut2, ...Te(i, D) }, onBlur: (p2) => {
+    return B2.length ? React$2.createElement("ol", { key: d2, dir: ot2 === "auto" ? _t() : ot2, tabIndex: -1, ref: A, className: g2, "data-sonner-toaster": true, "data-theme": W2, "data-y-position": y2, "data-lifted": Y2 && B2.length > 1 && !w2, "data-x-position": R2, style: { "--front-toast-height": `${((j2 = nt2[0]) == null ? void 0 : j2.height) || 0}px`, "--width": `${he}px`, "--gap": `${at}px`, ...ut2, ...Te(i, D) }, onBlur: (p2) => {
       z2.current && !p2.currentTarget.contains(p2.relatedTarget) && (z2.current = false, L2.current && (L2.current.focus({ preventScroll: true }), L2.current = null));
     }, onFocus: (p2) => {
       p2.target instanceof HTMLElement && p2.target.dataset.dismissible === "false" || z2.current || (z2.current = true, L2.current = p2.relatedTarget);
@@ -34814,50 +35350,91 @@ var $e = reactExports.forwardRef(function(e, t) {
       p2.target instanceof HTMLElement && p2.target.dataset.dismissible === "false" || J2(true);
     }, onPointerUp: () => J2(false) }, B2.filter((p2) => !p2.position && h2 === 0 || p2.position === d2).map((p2, _2) => {
       var O2, G2;
-      return o.createElement(ve, { key: p2.id, icons: st2, index: _2, toast: p2, defaultRichColors: F2, duration: (O2 = l2 == null ? void 0 : l2.duration) != null ? O2 : et2, className: l2 == null ? void 0 : l2.className, descriptionClassName: l2 == null ? void 0 : l2.descriptionClassName, invert: a2, visibleToasts: ft2, closeButton: (G2 = l2 == null ? void 0 : l2.closeButton) != null ? G2 : S2, interacting: lt, position: d2, style: l2 == null ? void 0 : l2.style, unstyled: l2 == null ? void 0 : l2.unstyled, classNames: l2 == null ? void 0 : l2.classNames, cancelButtonStyle: l2 == null ? void 0 : l2.cancelButtonStyle, actionButtonStyle: l2 == null ? void 0 : l2.actionButtonStyle, removeToast: ct2, toasts: B2.filter((k2) => k2.position == p2.position), heights: nt2.filter((k2) => k2.position == p2.position), setHeights: it2, expandByDefault: w2, gap: at, loadingIcon: X2, expanded: Y2, pauseWhenPageIsHidden: rt2, swipeDirections: e.swipeDirections });
+      return React$2.createElement(ve, { key: p2.id, icons: st2, index: _2, toast: p2, defaultRichColors: F2, duration: (O2 = l2 == null ? void 0 : l2.duration) != null ? O2 : et2, className: l2 == null ? void 0 : l2.className, descriptionClassName: l2 == null ? void 0 : l2.descriptionClassName, invert: a2, visibleToasts: ft2, closeButton: (G2 = l2 == null ? void 0 : l2.closeButton) != null ? G2 : S2, interacting: lt, position: d2, style: l2 == null ? void 0 : l2.style, unstyled: l2 == null ? void 0 : l2.unstyled, classNames: l2 == null ? void 0 : l2.classNames, cancelButtonStyle: l2 == null ? void 0 : l2.cancelButtonStyle, actionButtonStyle: l2 == null ? void 0 : l2.actionButtonStyle, removeToast: ct2, toasts: B2.filter((k2) => k2.position == p2.position), heights: nt2.filter((k2) => k2.position == p2.position), setHeights: it2, expandByDefault: w2, gap: at, loadingIcon: X2, expanded: Y2, pauseWhenPageIsHidden: rt2, swipeDirections: e.swipeDirections });
     })) : null;
   }));
 });
-const STAGE_ORDER = ["nlpParser", "encoder", "scriptGenerator"];
-const STAGE_LABELS = {
-  nlpParser: "NLP Parser",
-  encoder: "Encoder",
-  scriptGenerator: "Script Generator"
-};
-function stateLabel(state) {
-  switch (state) {
-    case PipelineState.processing:
-      return "Processing";
-    case PipelineState.completed:
-      return "Completed";
-    default:
-      return "Idle";
+const DISPLAY_STAGES = [
+  {
+    key: "nlpOutput",
+    label: "NLP Output",
+    color: "#5b4fcf",
+    colorRgb: "91, 79, 207",
+    icon: MessageSquareText
+  },
+  {
+    key: "encoder",
+    label: "Encoder",
+    color: "#00C9A7",
+    colorRgb: "0, 201, 167",
+    icon: Binary
+  },
+  {
+    key: "dataIngestion",
+    label: "3GPP data Ingestion",
+    color: "#FF6B35",
+    colorRgb: "255, 107, 53",
+    icon: Database
+  },
+  {
+    key: "scriptCreation",
+    label: "Script Creation",
+    color: "#FFD166",
+    colorRgb: "255, 209, 102",
+    icon: FileCode
   }
-}
-function deriveStatus(stages) {
-  const all = STAGE_ORDER.map((k2) => stages[k2]);
-  if (all.every((s) => s === PipelineState.completed)) return "Completed";
-  if (all.some((s) => s === PipelineState.processing)) return "Processing";
-  return "Idle";
-}
-function deriveScriptStatus(stages) {
-  const final = stages.scriptGenerator;
-  switch (final) {
-    case PipelineState.completed:
-      return "Script Generated";
-    case PipelineState.processing:
-      return "Generating Script…";
-    default:
-      return "Awaiting Generation";
+];
+function deriveStageStatuses(stages) {
+  if (!stages) {
+    return ["completed", "completed", "completed", "ongoing"];
   }
+  const mapState = (s) => {
+    if (s === PipelineState.completed) return "completed";
+    if (s === PipelineState.processing) return "ongoing";
+    return "idle";
+  };
+  const nlpActionStatus = stages.encoder === PipelineState.completed ? "completed" : "ongoing";
+  return [
+    mapState(stages.nlpParser),
+    mapState(stages.encoder),
+    nlpActionStatus,
+    mapState(stages.scriptGenerator)
+  ];
+}
+function deriveRequestDetails(stages, rowId) {
+  if (!stages) {
+    return `Test request ${rowId} — details captured from workspace submission. Awaiting pipeline status from backend.`;
+  }
+  const lines = [
+    `Request: req-${rowId}`,
+    `AI Parser: ${stages.nlpParser}`,
+    `Encoder: ${stages.encoder}`,
+    `Script Generator: ${stages.scriptGenerator}`,
+    "",
+    "Details derived from the latest pipeline status response (actor.getPipelineStatus)."
+  ];
+  return lines.join("\n");
 }
 function deriveOutputPrediction(stages, rowId) {
-  const lines = STAGE_ORDER.map((k2) => {
-    return `${STAGE_LABELS[k2]}: ${stateLabel(stages[k2])}`;
-  });
+  if (!stages) {
+    return `Output prediction for request req-${rowId} will populate once the pipeline reports status.`;
+  }
+  const statuses = deriveStageStatuses(stages);
+  const lines = DISPLAY_STAGES.map((s, i) => `${s.label}: ${statuses[i]}`);
   lines.push("");
-  lines.push(`Request ${rowId} pipeline summary derived from backend state.`);
+  lines.push(`Predicted modem protocol script output for req-${rowId}.`);
   return lines.join("\n");
+}
+function deriveScriptName(stages, rowId) {
+  const base = `modem_protocol_req-${rowId}`;
+  if (!stages) return `${base}_draft`;
+  if (stages.scriptGenerator === PipelineState.completed) {
+    return `${base}_v1.script`;
+  }
+  if (stages.scriptGenerator === PipelineState.processing) {
+    return `${base}_generating…`;
+  }
+  return `${base}_pending`;
 }
 function ResultsPage({ rowId }) {
   const { actor } = useActor();
@@ -34865,16 +35442,32 @@ function ResultsPage({ rowId }) {
   const [loading, setLoading] = reactExports.useState(true);
   const [copiedKey, setCopiedKey] = reactExports.useState(null);
   const [copiedUrl, setCopiedUrl] = reactExports.useState(false);
+  const [apiCallCount, setApiCallCount] = reactExports.useState(0);
+  const firstSeenRef = reactExports.useRef(null);
+  const [createdTs, setCreatedTs] = reactExports.useState("—");
+  const [processedTs, setProcessedTs] = reactExports.useState("—");
   reactExports.useEffect(() => {
     let cancelled = false;
     const testRequestId = `req-${rowId}`;
+    if (firstSeenRef.current === null) {
+      firstSeenRef.current = Date.now();
+    }
     const fetchStatus = async () => {
       if (!actor) return;
       try {
         const status = await actor.getPipelineStatus(testRequestId);
-        if (!cancelled) {
-          setStages(status);
-          setLoading(false);
+        if (cancelled) return;
+        setStages(status);
+        setLoading(false);
+        setApiCallCount((c2) => c2 + 1);
+        setCreatedTs(
+          (prev) => prev === "—" ? new Date(firstSeenRef.current ?? Date.now()).toLocaleString() : prev
+        );
+        const allDone = status.nlpParser === PipelineState.completed && status.encoder === PipelineState.completed && status.scriptGenerator === PipelineState.completed;
+        if (allDone) {
+          setProcessedTs(
+            (prev) => prev === "—" ? (/* @__PURE__ */ new Date()).toLocaleString() : prev
+          );
         }
       } catch {
         if (!cancelled) {
@@ -34911,20 +35504,22 @@ function ResultsPage({ rowId }) {
     }
   }, []);
   const requestIdValue = `req-${rowId}`;
-  const requestDetailsValue = `Test request ${rowId} — details captured from workspace submission.`;
-  const statusValue = stages ? deriveStatus(stages) : "Idle";
-  const scriptStatusValue = stages ? deriveScriptStatus(stages) : "Awaiting Generation";
-  const outputPredictionValue = stages ? deriveOutputPrediction(stages, rowId) : "Output prediction will populate once the pipeline reports status.";
-  const fields = [
-    {
-      key: "Request_Id",
-      label: "Request_Id",
-      value: requestIdValue,
-      tall: false
-    },
+  const stageStatuses = deriveStageStatuses(stages);
+  const requestDetailsValue = deriveRequestDetails(stages, rowId);
+  const outputPredictionValue = deriveOutputPrediction(stages, rowId);
+  const scriptNameValue = deriveScriptName(stages, rowId);
+  const headerItems = [
+    { label: "Test ID", value: requestIdValue },
+    { label: "Request Ref. Number", value: `REF-${rowId}` },
+    { label: "Created", value: createdTs },
+    { label: "Processed", value: processedTs },
+    { label: "Duration", value: String(apiCallCount) },
+    { label: "Script Name", value: scriptNameValue, isScriptName: true }
+  ];
+  const boxes = [
     {
       key: "Request_Details",
-      label: "Request_Details",
+      label: "Request Details",
       value: requestDetailsValue,
       tall: true
     },
@@ -34933,13 +35528,6 @@ function ResultsPage({ rowId }) {
       label: "Output Prediction",
       value: outputPredictionValue,
       tall: true
-    },
-    { key: "Status", label: "Status", value: statusValue, tall: false },
-    {
-      key: "Script_Status",
-      label: "Script_Status",
-      value: scriptStatusValue,
-      tall: false
     }
   ];
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-root", "data-ocid": "results.page", children: [
@@ -34953,15 +35541,47 @@ function ResultsPage({ rowId }) {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "results-header", "data-ocid": "results.header.section", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-header-left", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "results-tag", children: "Results" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "results-title", children: "Request Details" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "results-sub", children: [
-          "Read-only snapshot for request ",
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { children: [
-            "req-",
-            rowId
-          ] }),
-          ". Use the copy controls to capture any field."
-        ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "results-title", children: "Request Snapshot" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "results-meta-grid",
+            "data-ocid": "results.header.meta.list",
+            children: headerItems.map((item, idx) => {
+              const isScriptName = item.isScriptName;
+              const scriptValue = String(item.value);
+              const hasScript = isScriptName && scriptValue.trim() !== "";
+              return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "div",
+                {
+                  className: "results-meta-item",
+                  "data-ocid": `results.header.meta.item.${idx + 1}`,
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "results-meta-label", children: item.label }),
+                    hasScript ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "button",
+                      {
+                        type: "button",
+                        className: "results-meta-link",
+                        "data-ocid": `results.header.meta.script_name.link.${idx + 1}`,
+                        onClick: () => {
+                          window.open(
+                            scriptValue,
+                            "_blank",
+                            "noopener,noreferrer"
+                          );
+                        },
+                        title: `Open ${scriptValue} in a new tab`,
+                        children: scriptValue
+                      }
+                    ) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "results-meta-value", children: item.value })
+                  ]
+                },
+                item.label
+              );
+            })
+          }
+        )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
@@ -34978,6 +35598,86 @@ function ResultsPage({ rowId }) {
         }
       )
     ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "section",
+      {
+        className: "results-pipeline",
+        "data-ocid": "results.pipeline.section",
+        "aria-label": "Pipeline status",
+        children: DISPLAY_STAGES.map((stage, idx) => {
+          const status = stageStatuses[idx];
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(React$2.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: `results-pipeline-stage results-pipeline-stage-${status}`,
+                style: {
+                  "--stage-color": stage.color,
+                  "--stage-color-rgb": stage.colorRgb
+                },
+                "data-ocid": `results.pipeline.stage.item.${idx + 1}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-pipeline-node", "aria-hidden": "true", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-node-ring" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-node-core" }),
+                    status === "completed" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Check,
+                      {
+                        className: "results-pipeline-node-check",
+                        size: 16,
+                        strokeWidth: 3,
+                        "aria-hidden": "true"
+                      }
+                    ),
+                    status === "ongoing" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "div",
+                      {
+                        className: "results-pipeline-node-spinner",
+                        "aria-hidden": "true"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-pipeline-label", children: [
+                    (() => {
+                      const Icon2 = stage.icon;
+                      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        Icon2,
+                        {
+                          size: 16,
+                          strokeWidth: 2.5,
+                          className: "results-pipeline-stage-icon",
+                          "aria-hidden": "true"
+                        }
+                      );
+                    })(),
+                    stage.label
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "div",
+                    {
+                      className: `results-pipeline-status results-pipeline-status-${status}`,
+                      children: status === "completed" ? "completed" : status === "ongoing" ? "Ongoing" : "Idle"
+                    }
+                  ),
+                  status === "ongoing" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-progress", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-progress-bar" }) })
+                ]
+              }
+            ),
+            idx < DISPLAY_STAGES.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: `results-pipeline-connector ${stageStatuses[idx] === "completed" ? "results-pipeline-connector-active" : ""}`,
+                "aria-hidden": "true",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-connector-line" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-pipeline-connector-flow" })
+                ]
+              }
+            )
+          ] }, stage.key);
+        })
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "results-section", "data-ocid": "results.content.section", children: [
       loading && /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "output",
@@ -34991,10 +35691,10 @@ function ResultsPage({ rowId }) {
           ]
         }
       ),
-      !loading && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-fields", "data-ocid": "results.fields.list", children: fields.map((field, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      !loading && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "results-fields", "data-ocid": "results.fields.list", children: boxes.map((box, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "div",
         {
-          className: `results-field ${field.tall ? "results-field-tall" : ""}`,
+          className: "results-field",
           "data-ocid": `results.field.item.${idx + 1}`,
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "results-field-header", children: [
@@ -35002,8 +35702,8 @@ function ResultsPage({ rowId }) {
                 "label",
                 {
                   className: "results-field-label",
-                  htmlFor: `results-${field.key}`,
-                  children: field.label
+                  htmlFor: `results-${box.key}`,
+                  children: box.label
                 }
               ),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -35011,26 +35711,26 @@ function ResultsPage({ rowId }) {
                 {
                   type: "button",
                   className: "results-field-copy",
-                  onClick: () => handleCopy(field.key, field.value),
+                  onClick: () => handleCopy(box.key, box.value),
                   "data-ocid": `results.field.copy_button.${idx + 1}`,
-                  "aria-label": `Copy ${field.label}`,
-                  children: copiedKey === field.key ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 15, strokeWidth: 3, "aria-hidden": "true" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 15, strokeWidth: 2.5, "aria-hidden": "true" })
+                  "aria-label": `Copy ${box.label}`,
+                  children: copiedKey === box.key ? /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 15, strokeWidth: 3, "aria-hidden": "true" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 15, strokeWidth: 2.5, "aria-hidden": "true" })
                 }
               )
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
-                id: `results-${field.key}`,
-                className: `results-field-box ${field.tall ? "results-field-box-tall" : ""}`,
+                id: `results-${box.key}`,
+                className: `results-field-box ${box.tall ? "results-field-box-tall" : ""}`,
                 "data-ocid": `results.field.value.${idx + 1}`,
-                "aria-label": field.label,
-                children: field.value
+                "aria-label": box.label,
+                children: box.value
               }
             )
           ]
         },
-        field.key
+        box.key
       )) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "results-footer", "data-ocid": "results.footer.section", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
@@ -35101,17 +35801,30 @@ const Toaster = ({ ...props }) => {
 };
 function App() {
   const [resultId, setResultId] = reactExports.useState(null);
+  const [showHistory, setShowHistory] = reactExports.useState(false);
   reactExports.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const result = params.get("result");
     if (result !== null) {
       setResultId(result);
       document.title = "AI assist Modem Protocol Script Development";
+      return;
+    }
+    const history = params.get("history");
+    if (history !== null) {
+      setShowHistory(true);
+      document.title = "History — AI assist Modem Protocol Script Development";
     }
   }, []);
   if (resultId !== null) {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ErrorBoundary, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(ResultsPage, { rowId: resultId }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { position: "top-center", richColors: true })
+    ] });
+  }
+  if (showHistory) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(ErrorBoundary, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(HistoryPage, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { position: "top-center", richColors: true })
     ] });
   }
